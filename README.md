@@ -11,5 +11,3 @@ pip install -r requirements.txt
 python source/task1SokobanSigle/main.py
 
 python source/task2Competitive/mainCompetitive.py
-
-
