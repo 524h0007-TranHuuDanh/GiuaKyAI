@@ -1,5 +1,5 @@
-from .agent import Agent
-from .box import Box
+from ...shared.agent import Agent
+from ...shared.box import Box
 
 class GameState:
     def __init__(self, agents, boxes, goals, stepCount = 0):

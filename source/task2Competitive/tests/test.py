@@ -1,9 +1,9 @@
-from core.action import Action
-from core.agent import Agent
-from core.box import Box
+from source.shared.action import Action
+from source.shared.agent import Agent
+from source.shared.box import Box
 from core.gameState import GameState
-from core.rules import Rules
-from core.movement import Movement
+from source.shared.rules import Rules
+from source.shared.movement import Movement
 
 def createState(agents, boxes, goals, walls):
     state = GameState(
