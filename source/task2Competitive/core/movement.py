@@ -3,14 +3,14 @@ class Movement:
         self.rules = rules
 
     # Di chuyển một Agent
-    def moveAgent(self, state, agentId, action):
-        agent = state.getAgent(agentId)
+    def moveAgent(self, gameState, agentId, action):
+        agent = gameState.getAgent(agentId)
 
         if agent is None:
             return False
 
         # Hỏi Rules xem có đi được không
-        canMove = self.rules.canMoveAgent(state, agentId, action)
+        canMove = self.rules.canMoveAgent(gameState, agentId, action)
 
         if canMove == False:
             return False
@@ -21,7 +21,7 @@ class Movement:
         nextPosition = self.rules.getNextPosition(currentPosition, action)
 
         # Kiểm tra phía trước có box không
-        box = state.boxPosition(nextPosition)
+        box = gameState.boxPosition(nextPosition)
 
         # Nếu có box thì đẩy box
         if box is not None:

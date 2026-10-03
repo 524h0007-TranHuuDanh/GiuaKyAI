@@ -21,13 +21,13 @@ class Rules:
         return False
 
     # Tìm box tại vị trí
-    def boxPosition(self, state, position):
-        box = state.boxPosition(position)
+    def boxPosition(self, gameState, position):
+        box = gameState.boxPosition(position)
         return box
 
     # Kiểm tra một Agent có thể di chuyển không
-    def canMoveAgent(self, state, agentId, action):
-        agent = state.getAgent(agentId)
+    def canMoveAgent(self, gameState, agentId, action):
+        agent = gameState.getAgent(agentId)
 
         if agent is None:
             return False
@@ -40,7 +40,7 @@ class Rules:
             return False
 
         # Kiểm tra phía trước có box không
-        box = self.boxPosition(state, nextPosition)
+        box = self.boxPosition(gameState, nextPosition)
 
         # Không có box -> đi được
         if box is None:
@@ -55,7 +55,7 @@ class Rules:
             return False
 
         # Box đụng box khác
-        otherBox = self.boxPosition(state, boxNextPosition)
+        otherBox = self.boxPosition(gameState, boxNextPosition)
 
         if otherBox is not None:
             return False
