@@ -22,7 +22,7 @@ class GameState:
                 return box
         return None
 
-    def idGoal(self, position):
+    def isGoal(self, position):
         return position in self.goals #state.is_goal((3, 4)): nếu true thì 3,4 là goal
 
     #số lượng box nằm trên goal
@@ -50,3 +50,13 @@ class GameState:
             goals=list(self.goals),
             stepCount=self.stepCount
         )
+    #điểm của 1 Agent
+    def getScore(self, agentId):
+        score = 0
+        for box in self.boxes:
+            if (box.position in self.goals and box.owner == agentId):
+                score += 1
+        return score
+    #chênh lệch điểm
+    def getScoreDifference(self):
+        return self.getScore(1) - self.getScore(2)
