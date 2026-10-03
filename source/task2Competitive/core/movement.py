@@ -2,36 +2,56 @@ class Movement:
     def __init__(self, rules):
         self.rules = rules
 
-    # Di chuyển một Agent
-    def moveAgent(self, gameState, agentId, action):
-        agent = gameState.getAgent(agentId)
+    def applyActions(self, state, action1, action2):
+        # Rules chỉ quyết định, không sửa state gốc
+        plans = self.rules.resolActions(
+            state,
+            action1,
+            action2
+        )
 
-        if agent is None:
-            return False
+        p1 = plans[1]
+        p2 = plans[2]
 
-        # Hỏi Rules xem có đi được không
-        canMove = self.rules.canMoveAgent(gameState, agentId, action)
+        # Tạo state mới
+        new = state.copy()
 
-        if canMove == False:
-            return False
+        # Áp dụng kế hoạch của 2 Agent
+        self._applyPlan(new, 1, p1)
+        self._applyPlan(new, 2, p2)
 
-        # Tính vị trí mới
-        currentPosition = agent.position
+        # Kết thúc một bước
+        new.stepCount += 1
 
-        nextPosition = self.rules.getNextPosition(currentPosition, action)
+        return new
 
-        # Kiểm tra phía trước có box không
-        box = gameState.boxPosition(nextPosition)
+    def _applyPlan(self, state, agentId, plan):
 
-        # Nếu có box thì đẩy box
-        if box is not None:
-            boxPosition = box.position
+        # Action bị hủy -> Agent đứng yên
+        if not plan["valid"]:
+            return
 
-            boxNextPosition = self.rules.getNextPosition(boxPosition, action)
+        agent = state.getAgent(agentId)
 
-            box.position = boxNextPosition
+        # Nếu có box bị đẩy
+        if plan["box"] is not None:
 
-        # Di chuyển Agent
-        agent.position = nextPosition
+            oldBoxPosition = plan["box"].position
 
-        return True
+            # Tìm box tương ứng trong state mới
+            box = state.boxPosition(oldBoxPosition)
+
+            if box is not None:
+
+                box.position = plan["boxNextPosition"]
+
+                # Box nằm trên goal -> thuộc agent đẩy
+                if state.isGoal(plan["boxNextPosition"]):
+                    box.owner = agentId
+
+                # Box không còn trên goal
+                else:
+                    box.owner = None
+
+        # Di chuyển agent
+        agent.position = plan["nextPosition"]
