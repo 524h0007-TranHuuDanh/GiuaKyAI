@@ -1,21 +1,21 @@
-from ...shared.position import getNextPosition
+from ....shared.movement import Movement
+from ....shared.position import getNextPosition
 
 
-class CompetitiveMovement:
-    def __init__(self, competitiveRules):
-        self.competitiveRules = competitiveRules
+class CompetitiveMovement(Movement):
+    def __init__(self, rules):
+        super().__init__(rules)
 
     def moveTwoAgents(self, state, action1, action2):
-        canMove1, canMove2 = self.competitiveRules.resolveActions(
-            state,
-            action1,
-            action2
-        )
+        canMove1, canMove2 = self.rules.resolveActions(state, action1, action2)
 
         newState = state.copy()
 
         agent1 = newState.getAgent(1)
         agent2 = newState.getAgent(2)
+
+        nextPosition1 = agent1.position
+        nextPosition2 = agent2.position
 
         box1 = None
         box2 = None
@@ -23,10 +23,7 @@ class CompetitiveMovement:
         boxNextPosition1 = None
         boxNextPosition2 = None
 
-        nextPosition1 = agent1.position
-        nextPosition2 = agent2.position
-
-        # Tính trước action của Agent 1
+        # Tính trước nước đi của Agent 1
         if canMove1:
             if action1.name != "STAY":
                 nextPosition1 = getNextPosition(agent1.position, action1)
@@ -36,7 +33,7 @@ class CompetitiveMovement:
                 if box1 is not None:
                     boxNextPosition1 = getNextPosition(box1.position, action1)
 
-        # Tính trước action của Agent 2
+        # Tính trước nước đi của Agent 2
         if canMove2:
             if action2.name != "STAY":
                 nextPosition2 = getNextPosition(agent2.position, action2)

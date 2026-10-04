@@ -1,4 +1,5 @@
 import pygame
+from . import uiConfig
 
 
 class MapRenderer:
@@ -6,24 +7,14 @@ class MapRenderer:
         self.screen = screen
         self.tileSize = tileSize
 
-        self.floorColor = (240, 240, 240)
-        self.gridColor = (200, 200, 200)
-        self.wallColor = (80, 80, 80)
-
-        self.goalColor = (220, 70, 70)
-        self.boxColor = (180, 120, 60)
-
-        self.agent1Color = (70, 120, 220)
-        self.agent2Color = (70, 180, 100)
-
     def drawFloor(self, x, y):
         pixelX = x * self.tileSize
         pixelY = y * self.tileSize
 
         rect = pygame.Rect(pixelX, pixelY, self.tileSize, self.tileSize)
 
-        pygame.draw.rect(self.screen, self.floorColor, rect)
-        pygame.draw.rect(self.screen, self.gridColor, rect, 1)
+        pygame.draw.rect(self.screen, uiConfig.FLOOR_COLOR, rect)
+        pygame.draw.rect(self.screen, uiConfig.GRID_COLOR, rect, 1)
 
     def drawWall(self, position):
         x, y = position
@@ -33,7 +24,7 @@ class MapRenderer:
 
         rect = pygame.Rect(pixelX, pixelY, self.tileSize, self.tileSize)
 
-        pygame.draw.rect(self.screen, self.wallColor, rect)
+        pygame.draw.rect(self.screen, uiConfig.WALL_COLOR, rect)
 
     def drawGoal(self, position):
         x, y = position
@@ -41,30 +32,29 @@ class MapRenderer:
         centerX = x * self.tileSize + self.tileSize // 2
         centerY = y * self.tileSize + self.tileSize // 2
 
-        pygame.draw.circle(self.screen, self.goalColor, (centerX, centerY), 10)
+        pygame.draw.circle(self.screen, uiConfig.GOAL_COLOR, (centerX, centerY), 10)
 
-    def drawBox(self, box):
-        x, y = box.position
+    def drawBox(self, position):
+        x, y = position
 
         pixelX = x * self.tileSize + 5
         pixelY = y * self.tileSize + 5
 
         boxSize = self.tileSize - 10
-
         rect = pygame.Rect(pixelX, pixelY, boxSize, boxSize)
 
-        pygame.draw.rect(self.screen, self.boxColor, rect)
+        pygame.draw.rect(self.screen, uiConfig.BOX_COLOR, rect)
 
-    def drawAgent(self, agent):
-        x, y = agent.position
+    def drawAgent(self, position, agentId):
+        x, y = position
 
         centerX = x * self.tileSize + self.tileSize // 2
         centerY = y * self.tileSize + self.tileSize // 2
 
-        if agent.agentId == 1:
-            color = self.agent1Color
+        if agentId == 1:
+            color = uiConfig.AGENT1_COLOR
         else:
-            color = self.agent2Color
+            color = uiConfig.AGENT2_COLOR
 
         pygame.draw.circle(self.screen, color, (centerX, centerY), 18)
 
@@ -82,5 +72,8 @@ class MapRenderer:
         for box in state.boxes:
             self.drawBox(box)
 
-        for agent in state.agents:
-            self.drawAgent(agent)
+        if state.agent1 is not None:
+            self.drawAgent(state.agent1, 1)
+
+        if state.agent2 is not None:
+            self.drawAgent(state.agent2, 2)
