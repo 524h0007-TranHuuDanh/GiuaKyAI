@@ -34,7 +34,6 @@ def plot(rows, metric, ylabel, title, out_path):
     plt.ylabel(ylabel)
     plt.title(title)
     plt.legend()
-    plt.yscale("log")
     plt.tight_layout()
     plt.savefig(out_path)
     plt.close()
@@ -47,7 +46,7 @@ def main():
     plot(rows, "time_sec", "Time (s)", "Time UCS vs A*", RESULT_DIR / "time.png")
     plot(rows, "nodes_expanded", "Nodes", "Nodes UCS vs A*", RESULT_DIR / "nodes.png")
     plot(rows, "max_frontier", "Frontier", "Max frontier UCS vs A*", RESULT_DIR / "frontier.png")
-    plot(rows, "peak_memory_kb", "Memory (KB)", "Memory UCS vs A*", RESULT_DIR / "memory.png")
+    plot(rows, "memory_kb", "Memory (KB)", "Memory UCS vs A*", RESULT_DIR / "memory.png")
 
 
 if __name__ == "__main__":
