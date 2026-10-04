@@ -2,18 +2,22 @@ import heapq
 
 from .node import Node
 from .search_base import SearchAlgorithm, SearchResult
+from .heuristic import Heuristic
 
 
-class UCS(SearchAlgorithm):
+class AStar(SearchAlgorithm):
     def __init__(self, record=False, node_limit=None):
         self.record = record
         self.node_limit = node_limit
 
     def solve(self, problem):
         init = problem.initial_state
-        start_node = Node(state=init, cost=0)
 
-        frontier = [(0, 0, 0, start_node)]
+        h_func = Heuristic(init.goals, init.walls, init.width, init.height)
+        start_node = Node(state=init, cost=0)
+        h_start = h_func(init)
+
+        frontier = [(h_start, 0, 0, start_node)]
         counter = 1
 
         best_cost = {init.key(): 0}
@@ -56,9 +60,13 @@ class UCS(SearchAlgorithm):
                 if next_key in best_cost and next_g >= best_cost[next_key]:
                     continue
 
+                next_h = h_func(next_state)
+                if next_h == float("inf"):
+                    continue
+
                 best_cost[next_key] = next_g
                 next_node = Node(state=next_state, parent=node, action=action, cost=next_g)
-                heapq.heappush(frontier, (next_g, -next_g, counter, next_node))
+                heapq.heappush(frontier, (next_g + next_h, -next_g, counter, next_node))
                 counter += 1
 
             if len(frontier) > max_frontier:
