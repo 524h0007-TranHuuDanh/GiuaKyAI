@@ -1,62 +1,64 @@
 class SokobanState:
-    def __init__(self, agent1, agent2, boxes, goals, walls, width, height, row_lengths):
+    def __init__(self, agent1, agent2, boxes, goals, walls, width, height):
         self.agent1 = agent1
         self.agent2 = agent2
-
-        self.boxes = boxes
-        self.goals = goals
-        self.walls = walls
-
+        self.boxes = set(boxes)
+        self.goals = set(goals)
+        self.walls = set(walls)
         self.width = width
         self.height = height
-        self.row_lengths = row_lengths
 
     def get_agent(self, agent_id):
         if agent_id == 1:
             return self.agent1
-
         if agent_id == 2:
             return self.agent2
-
         return None
 
-    def is_wall(self, position):
-        if position in self.walls:
-            return True
+    def set_agent(self, agent_id, position):
+        if agent_id == 1:
+            self.agent1 = position
+        elif agent_id == 2:
+            self.agent2 = position
 
-        return False
+    def is_inside(self, position):
+        x, y = position
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    def is_wall(self, position):
+        return position in self.walls
 
     def is_box(self, position):
-        if position in self.boxes:
-            return True
-
-        return False
+        return position in self.boxes
 
     def is_goal(self, position):
-        if position in self.goals:
-            return True
+        return position in self.goals
 
-        return False
+    def box_position(self, position):
+        if position in self.boxes:
+            return position
+        return None
+
+    def is_solved(self):
+        return self.boxes == self.goals
 
     def count_boxes_on_goals(self):
         count = 0
-
         for box in self.boxes:
             if box in self.goals:
-                count = count + 1
-
+                count += 1
         return count
 
+    def key(self):
+        return (self.agent1, tuple(sorted(self.boxes)))
+
     def copy(self):
-        new_state = SokobanState(
+        return SokobanState(
             self.agent1,
             self.agent2,
-            frozenset(self.boxes),
-            frozenset(self.goals),
-            frozenset(self.walls),
+            set(self.boxes),
+            set(self.goals),
+            set(self.walls),
             self.width,
-            self.height,
-            self.row_lengths
+            self.height
         )
-
-        return new_state

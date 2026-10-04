@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from .screen.main_menu_screen import MainMenuScreen
 from .screen.map_select_menu_screen import MapSelectMenuScreen
@@ -13,48 +13,48 @@ class ScreenController:
         self.game_screen = GameScreen(screen)
 
         self.screen_state = "mode"
-
         self.mode = None
         self.selected_map = None
         self.map_names = []
 
-    def load_map_names(self):
-        if self.mode == "single":
-            folder = "source/map/one_agent"
-        else:
-            folder = "source/map/two_agents"
+        self.project_dir = Path(__file__).resolve().parents[2]
 
+    def go_to_mode_menu(self):
+        self.mode = None
+        self.selected_map = None
+        self.screen_state = "mode"
+
+    def get_map_folder(self):
+        if self.mode == "single":
+            return self.project_dir / "source" / "map" / "one_agent"
+
+        return self.project_dir / "source" / "map" / "two_agents"
+
+    def load_map_names(self):
+        folder = self.get_map_folder()
         self.map_names = []
 
-        if not os.path.exists(folder):
+        if not folder.exists():
             return
 
-        for file_name in os.listdir(folder):
-            if file_name.endswith(".txt"):
-                self.map_names.append(file_name)
+        for file_path in folder.iterdir():
+            if file_path.suffix == ".txt":
+                self.map_names.append(file_path.name)
 
         self.map_names.sort()
 
     def select_map(self, map_name):
-        if self.mode == "single":
-            folder = "source/map/one_agent"
-        else:
-            folder = "source/map/two_agents"
-
-        self.selected_map = os.path.join(folder, map_name)
+        folder = self.get_map_folder()
+        self.selected_map = folder / map_name
 
         state = parse_map(self.selected_map)
-
-        self.game_screen.load_game(state)
-
+        self.game_screen.load_game(state, self.mode)
         self.screen_state = "game"
 
     def draw(self):
         if self.screen_state == "mode":
             self.main_menu_screen.draw()
-
         elif self.screen_state == "map":
             self.map_select_menu_screen.draw(self.map_names, self.mode)
-
         elif self.screen_state == "game":
             self.game_screen.draw()
