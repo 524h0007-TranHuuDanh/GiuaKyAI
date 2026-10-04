@@ -1,60 +1,54 @@
-from ....shared.rules import Rules
 from ....shared.position import get_next_position
 
 
-class CompetitiveRules(Rules):
-    def get_next_position(self, state, agent_id, action):
-        agent = state.get_agent(agent_id)
-
-        if agent is None:
-            return None
-
-        if action.name == "STAY":
-            return agent
-
-        return get_next_position(agent, action)
-
-    def get_box_next_position(self, state, agent_id, action):
-        agent = state.get_agent(agent_id)
-
-        if agent is None or action.name == "STAY":
-            return None
-
-        next_position = get_next_position(agent, action)
-
-        if next_position not in state.boxes:
-            return None
-
-        return get_next_position(next_position, action)
-
+class CompetitiveRules:
     def resolve_actions(self, state, action1, action2):
-        can_move_1 = self.can_move_agent(state, 1, action1)
-        can_move_2 = self.can_move_agent(state, 2, action2)
+        can_move_1 = self.can_move(state, 1, action1)
+        can_move_2 = self.can_move(state, 2, action2)
 
-        next_1 = self.get_next_position(state, 1, action1)
-        next_2 = self.get_next_position(state, 2, action2)
-        box_next_1 = self.get_box_next_position(state, 1, action1)
-        box_next_2 = self.get_box_next_position(state, 2, action2)
+        next1 = state.agent1
+        next2 = state.agent2
+
+        if action1.name != "STAY":
+            next1 = get_next_position(state.agent1, action1)
+
+        if action2.name != "STAY":
+            next2 = get_next_position(state.agent2, action2)
 
         if can_move_1 and can_move_2:
-            if next_1 == next_2:
+            if next1 == next2:
                 can_move_1 = False
                 can_move_2 = False
 
-            if next_1 == state.agent2 and next_2 == state.agent1:
-                can_move_1 = False
-                can_move_2 = False
-
-            if box_next_1 is not None and box_next_1 == next_2:
-                can_move_1 = False
-                can_move_2 = False
-
-            if box_next_2 is not None and box_next_2 == next_1:
-                can_move_1 = False
-                can_move_2 = False
-
-            if box_next_1 is not None and box_next_1 == box_next_2:
+            elif next1 == state.agent2 and next2 == state.agent1:
                 can_move_1 = False
                 can_move_2 = False
 
         return can_move_1, can_move_2
+
+    def can_move(self, state, agent_id, action):
+        if action.name == "STAY":
+            return True
+
+        agent = state.get_agent(agent_id)
+        next_position = get_next_position(agent, action)
+
+        if not state.is_inside(next_position):
+            return False
+
+        if state.is_wall(next_position):
+            return False
+
+        other_agent = state.agent2 if agent_id == 1 else state.agent1
+
+        if next_position == other_agent:
+            return False
+
+        if next_position in state.boxes:
+            box_next = get_next_position(next_position, action)
+            if not state.is_inside(box_next): return False
+            if state.is_wall(box_next): return False
+            if box_next in state.boxes: return False
+            if box_next == other_agent: return False
+
+        return True

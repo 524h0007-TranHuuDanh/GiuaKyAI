@@ -35,6 +35,39 @@ class EventHandler:
 
         if game.back_button.collidepoint(mouse_position):
             self.screen_controller.screen_state = "map"
+            return
+
+        if game.mode == "single":
+            if game.ucs_button.collidepoint(mouse_position):
+                game.algorithm = "UCS"
+                return
+
+            if game.astar_button.collidepoint(mouse_position):
+                game.algorithm = "A*"
+                return
+
+        if game.mode == "competitive":
+            game.input_active = game.input_box.collidepoint(mouse_position)
+
+        if game.run_button.collidepoint(mouse_position):
+            if game.mode == "single" and game.algorithm is not None:
+                game.run_single(game.algorithm)
+
+            elif game.mode == "competitive" and game.n_text:
+                game.run_competitive(int(game.n_text))
+
+            return
+
+        if game.prev_button.collidepoint(mouse_position):
+            game.prev()
+            return
+
+        if game.next_button.collidepoint(mouse_position):
+            game.next()
+            return
+
+        if game.reset_button.collidepoint(mouse_position):
+            game.reset()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -44,17 +77,31 @@ class EventHandler:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.screen_controller.screen_state == "mode":
                     self.handle_mode_menu(event.pos)
+
                 elif self.screen_controller.screen_state == "map":
                     self.handle_map_menu(event.pos)
+
                 elif self.screen_controller.screen_state == "game":
                     self.handle_game(event.pos)
 
-            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                if self.screen_controller.screen_state == "game":
-                    self.screen_controller.screen_state = "map"
-                elif self.screen_controller.screen_state == "map":
-                    self.screen_controller.go_to_mode_menu()
-                else:
-                    return False
+            if event.type == pygame.KEYDOWN:
+                game = self.screen_controller.game_screen
+
+                if self.screen_controller.screen_state == "game" and game.input_active:
+                    if event.key == pygame.K_BACKSPACE:
+                        game.n_text = game.n_text[:-1]
+
+                    elif event.unicode.isdigit():
+                        game.n_text += event.unicode
+
+                if event.key == pygame.K_ESCAPE:
+                    if self.screen_controller.screen_state == "game":
+                        self.screen_controller.screen_state = "map"
+
+                    elif self.screen_controller.screen_state == "map":
+                        self.screen_controller.go_to_mode_menu()
+
+                    else:
+                        return False
 
         return True

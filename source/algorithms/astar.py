@@ -1,3 +1,10 @@
+import heapq
+
+from .node import Node
+from .search_base import SearchAlgorithm, SearchResult
+from .heuristic import heuristic
+
+
 class AStar(SearchAlgorithm):
     def solve(self, problem):
         start_node = Node(state=problem.initial_state, cost=0)
@@ -14,18 +21,19 @@ class AStar(SearchAlgorithm):
 
             if key in explored:
                 continue
-            explored.add(key)
 
+            explored.add(key)
             nodes_expanded += 1
 
             if problem.goal_test(node.state):
                 actions = self.reconstruct(node)
+
                 return SearchResult(
                     solved=True,
                     actions=actions,
                     total_cost=node.cost,
                     nodes_expanded=nodes_expanded,
-                    max_frontier=max_frontier,
+                    max_frontier=max_frontier
                 )
 
             for action in problem.actions(node.state):
@@ -36,6 +44,7 @@ class AStar(SearchAlgorithm):
                     continue
 
                 next_h = heuristic(next_state)
+
                 if next_h == float("inf"):
                     continue
 
@@ -53,5 +62,5 @@ class AStar(SearchAlgorithm):
             actions=[],
             total_cost=0,
             nodes_expanded=nodes_expanded,
-            max_frontier=max_frontier,
+            max_frontier=max_frontier
         )
