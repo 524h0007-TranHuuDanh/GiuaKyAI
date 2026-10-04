@@ -4,6 +4,8 @@ from ..map_renderer import MapRenderer
 from .. import ui_config
 from ..ui_components import draw_button
 
+from ...mode.single.main_single import SingleMain
+from ...mode.single.core.problem import SokobanProblem
 from ...mode.competitive.main_competitive import CompetitiveMain
 from ...mode.competitive.core.competitive_state import CompetitiveState
 
@@ -15,13 +17,20 @@ class GameScreen:
         self.button_font = pygame.font.Font(None, ui_config.BUTTON_FONT_SIZE)
 
         self.back_button = pygame.Rect(20, 20, 100, 42)
+
+        self.ucs_button = pygame.Rect(720, 140, 85, 42)
+        self.astar_button = pygame.Rect(815, 140, 85, 42)
+
         self.input_box = pygame.Rect(720, 140, 180, 42)
+
         self.run_button = pygame.Rect(720, 200, 180, 42)
         self.prev_button = pygame.Rect(720, 260, 85, 42)
         self.next_button = pygame.Rect(815, 260, 85, 42)
         self.reset_button = pygame.Rect(720, 320, 180, 42)
 
         self.mode = None
+        self.algorithm = None
+
         self.state = None
         self.start_state = None
 
@@ -35,6 +44,8 @@ class GameScreen:
 
     def load_game(self, state, mode):
         self.mode = mode
+        self.algorithm = None
+
         self.state = state.copy()
         self.start_state = state.copy()
 
@@ -46,20 +57,23 @@ class GameScreen:
         self.input_active = False
         self.result = ""
 
-    # def run_single(self, algorithm):
-    #     game = SingleMain()
+    def run_single(self, algorithm):
+        if self.start_state is None:
+            return
 
-    #     self.actions = game.run(self.start_state.copy(), algorithm)
+        game = SingleMain()
+        self.actions = game.run(self.start_state.copy(), algorithm)
 
-    #     current = self.start_state.copy()
-    #     self.path = [current.copy()]
+        problem = SokobanProblem(self.start_state.copy())
+        current = self.start_state.copy()
+        self.path = [current.copy()]
 
-    #     for action in self.actions:
-    #         current = game.movement.move_agent(current, 1, action)
-    #         self.path.append(current.copy())
+        for action in self.actions:
+            current = problem.result(current, action)
+            self.path.append(current.copy())
 
-    #     self.step = 0
-    #     self.state = self.path[0]
+        self.step = 0
+        self.state = self.path[0]
 
     def run_competitive(self, max_steps):
         if self.start_state is None:
@@ -68,15 +82,7 @@ class GameScreen:
         game = CompetitiveMain()
         self.actions = game.run(self.start_state, max_steps)
 
-        current = CompetitiveState(
-            self.start_state.agent1,
-            self.start_state.agent2,
-            self.start_state.boxes,
-            self.start_state.goals,
-            self.start_state.walls,
-            self.start_state.width,
-            self.start_state.height
-        )
+        current = CompetitiveState(self.start_state.agent1, self.start_state.agent2, self.start_state.boxes, self.start_state.goals, self.start_state.walls, self.start_state.width, self.start_state.height)
 
         self.path = [current.copy()]
 
@@ -125,7 +131,15 @@ class GameScreen:
 
         self.renderer.draw(self.state, offset_x, offset_y)
 
-        if self.mode == "competitive":
+        if self.mode == "single":
+            draw_button(self.screen, self.ucs_button, self.button_font, "UCS", ui_config.ACTION_BUTTON_COLOR)
+            draw_button(self.screen, self.astar_button, self.button_font, "A*", ui_config.ACTION_BUTTON_COLOR)
+
+            if self.algorithm is not None:
+                algorithm_text = self.button_font.render(f"Selected: {self.algorithm}", True, ui_config.TEXT_COLOR)
+                self.screen.blit(algorithm_text, (720, 380))
+
+        elif self.mode == "competitive":
             pygame.draw.rect(self.screen, ui_config.WHITE, self.input_box)
             pygame.draw.rect(self.screen, ui_config.TEXT_COLOR, self.input_box, 2)
 

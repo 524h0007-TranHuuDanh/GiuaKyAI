@@ -33,13 +33,25 @@ class EventHandler:
     def handle_game(self, mouse_position):
         game = self.screen_controller.game_screen
 
-        game.input_active = game.input_box.collidepoint(mouse_position)
+        if game.mode == "competitive":
+            game.input_active = game.input_box.collidepoint(mouse_position)
+        else:
+            game.input_active = False
 
         if game.back_button.collidepoint(mouse_position):
             self.screen_controller.screen_state = "map"
 
+        elif game.mode == "single" and game.ucs_button.collidepoint(mouse_position):
+            game.algorithm = "UCS"
+
+        elif game.mode == "single" and game.astar_button.collidepoint(mouse_position):
+            game.algorithm = "A*"
+
         elif game.run_button.collidepoint(mouse_position):
-            if game.mode == "competitive" and game.n_text:
+            if game.mode == "single" and game.algorithm is not None:
+                game.run_single(game.algorithm)
+
+            elif game.mode == "competitive" and game.n_text:
                 game.run_competitive(int(game.n_text))
 
         elif game.prev_button.collidepoint(mouse_position):
