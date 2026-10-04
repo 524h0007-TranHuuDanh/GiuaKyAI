@@ -7,71 +7,58 @@ class MapRenderer:
         self.screen = screen
         self.tile_size = tile_size
 
-        self.floor_image = pygame.image.load(ui_config.FLOOR_IMAGE).convert_alpha()
-        self.wall_image = pygame.image.load(ui_config.WALL_IMAGE).convert_alpha()
-        self.box_image = pygame.image.load(ui_config.BOX_IMAGE).convert_alpha()
-        self.goal_image = pygame.image.load(ui_config.GOAL_IMAGE).convert_alpha()
-        self.agent1_image = pygame.image.load(ui_config.AGENT1_IMAGE).convert_alpha()
-        self.agent2_image = pygame.image.load(ui_config.AGENT2_IMAGE).convert_alpha()
+    def cell_rect(self, x, y, offset_x, offset_y):
+        return pygame.Rect(
+            offset_x + x * self.tile_size,
+            offset_y + y * self.tile_size,
+            self.tile_size,
+            self.tile_size
+        )
 
-        self.floor_image = pygame.transform.scale(self.floor_image, (tile_size, tile_size))
-        self.wall_image = pygame.transform.scale(self.wall_image, (tile_size, tile_size))
-        self.box_image = pygame.transform.scale(self.box_image, (tile_size, tile_size))
-        self.goal_image = pygame.transform.scale(self.goal_image, (tile_size, tile_size))
-        self.agent1_image = pygame.transform.scale(self.agent1_image, (tile_size, tile_size))
-        self.agent2_image = pygame.transform.scale(self.agent2_image, (tile_size, tile_size))
+    def draw(self, state, offset_x, offset_y):
+        for y in range(state.height):
+            for x in range(state.width):
+                rect = self.cell_rect(x, y, offset_x, offset_y)
 
-    def draw_floor(self, x, y):
-        pixel_x = x * self.tile_size
-        pixel_y = y * self.tile_size
-        self.screen.blit(self.floor_image, (pixel_x, pixel_y))
+                if (x, y) in state.walls:
+                    color = ui_config.WALL_COLOR
+                else:
+                    color = ui_config.FLOOR_COLOR
 
-    def draw_wall(self, position):
-        x, y = position
-        pixel_x = x * self.tile_size
-        pixel_y = y * self.tile_size
-        self.screen.blit(self.wall_image, (pixel_x, pixel_y))
-
-    def draw_goal(self, position):
-        x, y = position
-        pixel_x = x * self.tile_size
-        pixel_y = y * self.tile_size
-        self.screen.blit(self.goal_image, (pixel_x, pixel_y))
-
-    def draw_box(self, position):
-        x, y = position
-        pixel_x = x * self.tile_size
-        pixel_y = y * self.tile_size
-        self.screen.blit(self.box_image, (pixel_x, pixel_y))
-
-    def draw_agent(self, position, agent_id):
-        x, y = position
-        pixel_x = x * self.tile_size
-        pixel_y = y * self.tile_size
-
-        if agent_id == 1:
-            image = self.agent1_image
-        else:
-            image = self.agent2_image
-
-        self.screen.blit(image, (pixel_x, pixel_y))
-
-    def draw(self, walls, state, rows, columns):
-        for y in range(rows):
-            for x in range(columns):
-                self.draw_floor(x, y)
-
-        for wall in walls:
-            self.draw_wall(wall)
+                pygame.draw.rect(self.screen, color, rect)
+                pygame.draw.rect(self.screen, ui_config.GRID_COLOR, rect, 1)
 
         for goal in state.goals:
-            self.draw_goal(goal)
+            x, y = goal
+            rect = self.cell_rect(x, y, offset_x, offset_y)
+            center = rect.center
+            pygame.draw.circle(self.screen, ui_config.GOAL_COLOR, center, self.tile_size // 7)
 
         for box in state.boxes:
-            self.draw_box(box)
+            x, y = box
+            rect = self.cell_rect(x, y, offset_x, offset_y).inflate(-10, -10)
+
+            if box in state.goals:
+                color = ui_config.BOX_GOAL_COLOR
+            else:
+                color = ui_config.BOX_COLOR
+
+            pygame.draw.rect(self.screen, color, rect)
+            pygame.draw.rect(self.screen, ui_config.TEXT_COLOR, rect, 2)
 
         if state.agent1 is not None:
-            self.draw_agent(state.agent1, 1)
+            self.draw_agent(state.agent1, 1, offset_x, offset_y)
 
         if state.agent2 is not None:
-            self.draw_agent(state.agent2, 2)
+            self.draw_agent(state.agent2, 2, offset_x, offset_y)
+
+    def draw_agent(self, position, agent_id, offset_x, offset_y):
+        x, y = position
+        rect = self.cell_rect(x, y, offset_x, offset_y).inflate(-12, -12)
+
+        if agent_id == 1:
+            color = ui_config.AGENT1_COLOR
+        else:
+            color = ui_config.AGENT2_COLOR
+
+        pygame.draw.circle(self.screen, color, rect.center, rect.width // 2)
