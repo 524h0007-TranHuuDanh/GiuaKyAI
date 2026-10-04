@@ -6,6 +6,9 @@ from .heuristic import heuristic
 
 
 class AStar(SearchAlgorithm):
+    def __init__(self, max_nodes=None):
+        self.max_nodes = max_nodes
+
     def solve(self, problem):
         start_node = Node(state=problem.initial_state, cost=0)
 
@@ -16,6 +19,9 @@ class AStar(SearchAlgorithm):
         max_frontier = 1
 
         while frontier:
+            if self.max_nodes is not None and nodes_expanded >= self.max_nodes:
+                break
+
             f, _, node = heapq.heappop(frontier)
             key = node.state.key()
 
@@ -27,13 +33,12 @@ class AStar(SearchAlgorithm):
 
             if problem.goal_test(node.state):
                 actions = self.reconstruct(node)
-
                 return SearchResult(
                     solved=True,
                     actions=actions,
                     total_cost=node.cost,
                     nodes_expanded=nodes_expanded,
-                    max_frontier=max_frontier
+                    max_frontier=max_frontier,
                 )
 
             for action in problem.actions(node.state):
@@ -44,7 +49,6 @@ class AStar(SearchAlgorithm):
                     continue
 
                 next_h = heuristic(next_state)
-
                 if next_h == float("inf"):
                     continue
 
@@ -62,5 +66,5 @@ class AStar(SearchAlgorithm):
             actions=[],
             total_cost=0,
             nodes_expanded=nodes_expanded,
-            max_frontier=max_frontier
+            max_frontier=max_frontier,
         )
