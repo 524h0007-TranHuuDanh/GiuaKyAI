@@ -1,12 +1,12 @@
 from source.shared.action import Action
 from source.shared.agent import Agent
 from source.shared.box import Box
-from source.mode.Competitive.core.competitiveState import GameState
+from source.mode.competitive.core.competitive_state import CompetitiveState
 from source.shared.rules import Rules
 from source.shared.movement import Movement
 
-def createState(agents, boxes, goals, walls):
-    state = GameState(
+def create_state(agents, boxes, goals, walls):
+    state = CompetitiveState(
         agents=agents,
         boxes=boxes,
         goals=goals
@@ -29,21 +29,21 @@ def test_normal_move():
 
     walls = set()
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         goals,
         walls
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.STAY
     )
 
-    assert newState.getAgent(1).position == (1, 0)
-    assert newState.getAgent(2).position == (5, 5)
+    assert new_state.get_agent(1).position == (1, 0)
+    assert new_state.get_agent(2).position == (5, 5)
 
     print("PASS: normal move")
 
@@ -53,23 +53,23 @@ def test_stay():
         Agent(2, (5, 5))
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         [],
         [],
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.STAY,
         Action.STAY
     )
 
-    assert newState.getAgent(1).position == (0, 0)
-    assert newState.getAgent(2).position == (5, 5)
+    assert new_state.get_agent(1).position == (0, 0)
+    assert new_state.get_agent(2).position == (5, 5)
 
-    assert newState.stepCount == 1
+    assert new_state.step_count == 1
 
     print("PASS: stay")
 
@@ -87,21 +87,21 @@ def test_box_wall():
         (2, 0)
     }
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         [],
         walls
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.STAY
     )
 
-    assert newState.getAgent(1).position == (0, 0)
-    assert newState.boxPosition((1, 0)) is not None
+    assert new_state.get_agent(1).position == (0, 0)
+    assert new_state.box_position((1, 0)) is not None
 
     print("PASS: box blocked by wall")
 
@@ -111,21 +111,21 @@ def test_same_target():
         Agent(2, (2, 0))
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         [],
         [],
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.WEST
     )
 
-    assert newState.getAgent(1).position == (0, 0)
-    assert newState.getAgent(2).position == (2, 0)
+    assert new_state.get_agent(1).position == (0, 0)
+    assert new_state.get_agent(2).position == (2, 0)
 
     print("PASS: same target")
 
@@ -135,21 +135,21 @@ def test_swap_position():
         Agent(2, (1, 0))
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         [],
         [],
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.WEST
     )
 
-    assert newState.getAgent(1).position == (0, 0)
-    assert newState.getAgent(2).position == (1, 0)
+    assert new_state.get_agent(1).position == (0, 0)
+    assert new_state.get_agent(2).position == (1, 0)
 
     print("PASS: swap blocked")
 
@@ -163,22 +163,22 @@ def test_push_box_into_agent():
         Box((1, 0))
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         [],
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.STAY
     )
 
-    assert newState.getAgent(1).position == (0, 0)
-    assert newState.getAgent(2).position == (2, 0)
-    assert newState.boxPosition((1, 0)) is not None
+    assert new_state.get_agent(1).position == (0, 0)
+    assert new_state.get_agent(2).position == (2, 0)
+    assert new_state.box_position((1, 0)) is not None
 
     print("PASS: box into agent blocked")
 
@@ -196,26 +196,26 @@ def test_box_owner():
         (2, 0)
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         goals,
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.STAY
     )
 
-    box = newState.boxPosition((2, 0))
+    box = new_state.box_position((2, 0))
 
     assert box is not None
     assert box.owner == 1
 
-    assert newState.getScore(1) == 1
-    assert newState.getScore(2) == 0
+    assert new_state.get_score(1) == 1
+    assert new_state.get_score(2) == 0
 
     print("PASS: box owner and score")
 
@@ -225,24 +225,24 @@ def test_state_copy():
         Agent(2, (5, 5))
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         [],
         [],
         set()
     )
 
-    newState = movement.applyActions(
+    new_state = movement.apply_actions(
         state,
         Action.EAST,
         Action.STAY
     )
 
-    assert state.getAgent(1).position == (0, 0)
-    assert newState.getAgent(1).position == (1, 0)
+    assert state.get_agent(1).position == (0, 0)
+    assert new_state.get_agent(1).position == (1, 0)
 
-    assert state.stepCount == 0
-    assert newState.stepCount == 1
+    assert state.step_count == 0
+    assert new_state.step_count == 1
 
     print("PASS: state copy")
 
@@ -260,14 +260,14 @@ def test_agent2_takes_box_and_gets_owner():
         (3, 2)
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         goals,
         set()
     )
 def test_box_on_goal_has_no_owner():
-    goalPosition = (3, 2)
+    goal_position = (3, 2)
 
     agents = [
         Agent(1, (1, 1)),
@@ -275,35 +275,35 @@ def test_box_on_goal_has_no_owner():
     ]
 
     boxes = [
-        Box(goalPosition)
+        Box(goal_position)
     ]
 
     goals = [
-        goalPosition
+        goal_position
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         goals,
         set()
     )
 
-    box = state.boxPosition(goalPosition)
+    box = state.box_position(goal_position)
 
     assert box is not None
-    assert box.position == goalPosition
+    assert box.position == goal_position
     assert box.owner is None
 
-    assert state.isGoal(goalPosition)
+    assert state.is_goal(goal_position)
 
-    assert state.getScore(1) == 0
-    assert state.getScore(2) == 0
+    assert state.get_score(1) == 0
+    assert state.get_score(2) == 0
 
     print("PASS: box on goal has no owner")
 
 def test_agent2_takes_box_and_gets_owner():
-    goalPosition = (3, 2)
+    goal_position = (3, 2)
 
     agents = [
         Agent(1, (1, 1)),
@@ -311,14 +311,14 @@ def test_agent2_takes_box_and_gets_owner():
     ]
 
     boxes = [
-        Box(goalPosition, owner=1)
+        Box(goal_position, owner=1)
     ]
 
     goals = [
-        goalPosition
+        goal_position
     ]
 
-    state, movement = createState(
+    state, movement = create_state(
         agents,
         boxes,
         goals,
@@ -330,44 +330,44 @@ def test_agent2_takes_box_and_gets_owner():
     # Agent 2 đẩy box ra khỏi goal
     # =========================
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.EAST
     )
 
-    box = state.boxPosition((4, 2))
+    box = state.box_position((4, 2))
 
     assert box is not None
     assert box.owner is None
 
-    assert state.getScore(1) == 0
-    assert state.getScore(2) == 0
+    assert state.get_score(1) == 0
+    assert state.get_score(2) == 0
 
     # =========================
     # BƯỚC 2:
     # Agent 2 đi vòng sang bên phải box
     # =========================
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.NORTH
     )
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.EAST
     )
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.EAST
     )
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.SOUTH
@@ -378,19 +378,19 @@ def test_agent2_takes_box_and_gets_owner():
     # Agent 2 đẩy box trở lại goal
     # =========================
 
-    state = movement.applyActions(
+    state = movement.apply_actions(
         state,
         Action.STAY,
         Action.WEST
     )
 
-    box = state.boxPosition(goalPosition)
+    box = state.box_position(goal_position)
 
     assert box is not None
     assert box.owner == 2
 
-    assert state.getScore(1) == 0
-    assert state.getScore(2) == 1
+    assert state.get_score(1) == 0
+    assert state.get_score(2) == 1
 
     print("PASS: agent 2 takes box and gets owner")
 if __name__ == "__main__":

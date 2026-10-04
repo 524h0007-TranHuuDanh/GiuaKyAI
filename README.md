@@ -10,4 +10,4 @@ pip install -r requirements.txt
 ## chạy
 python source/task1SokobanSigle/main.py
 
-python source/task2Competitive/mainCompetitive.py
+python source/mode/competitive/main_competitive.py
