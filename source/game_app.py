@@ -10,7 +10,6 @@ class GameApp:
         pygame.init()
 
         screen = pygame.display.set_mode((ui_config.WINDOW_WIDTH, ui_config.WINDOW_HEIGHT))
-        pygame.display.set_caption("Sokoban")
 
         screen_controller = ScreenController(screen)
         event_handler = EventHandler(screen_controller)

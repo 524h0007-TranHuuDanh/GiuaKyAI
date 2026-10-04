@@ -7,6 +7,7 @@ class CompetitiveMovement:
 
     def move_two_agents(self, state, action1, action2):
         can_move_1, can_move_2 = self.rules.resolve_actions(state, action1, action2)
+
         new_state = state.copy()
 
         self.move_one(new_state, 1, action1, can_move_1)
@@ -15,15 +16,17 @@ class CompetitiveMovement:
         return new_state
 
     def move_one(self, state, agent_id, action, can_move):
-        if not can_move or action.name == "STAY":
+        if can_move == False:
+            return
+
+        if action.name == "STAY":
             return
 
         agent = state.get_agent(agent_id)
         next_position = get_next_position(agent, action)
 
         if next_position in state.boxes:
-            box_next = get_next_position(next_position, action)
-            state.boxes.remove(next_position)
-            state.boxes.add(box_next)
+            box_next_position = get_next_position(next_position, action)
+            state.move_box(next_position, box_next_position, agent_id)
 
         state.set_agent(agent_id, next_position)
