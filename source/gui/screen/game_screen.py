@@ -6,6 +6,7 @@ from ..ui_components import draw_button
 
 from ...mode.single.main_single import SingleMain
 from ...mode.single.core.problem import SokobanProblem
+
 from ...mode.competitive.main_competitive import CompetitiveMain
 from ...mode.competitive.core.competitive_state import CompetitiveState
 
@@ -20,7 +21,6 @@ class GameScreen:
 
         self.ucs_button = pygame.Rect(720, 140, 85, 42)
         self.astar_button = pygame.Rect(815, 140, 85, 42)
-
         self.input_box = pygame.Rect(720, 140, 180, 42)
 
         self.run_button = pygame.Rect(720, 200, 180, 42)
@@ -66,6 +66,7 @@ class GameScreen:
 
         problem = SokobanProblem(self.start_state.copy())
         current = self.start_state.copy()
+
         self.path = [current.copy()]
 
         for action in self.actions:
@@ -136,8 +137,8 @@ class GameScreen:
             draw_button(self.screen, self.astar_button, self.button_font, "A*", ui_config.ACTION_BUTTON_COLOR)
 
             if self.algorithm is not None:
-                algorithm_text = self.button_font.render(f"Selected: {self.algorithm}", True, ui_config.TEXT_COLOR)
-                self.screen.blit(algorithm_text, (720, 380))
+                text = self.button_font.render(f"Selected: {self.algorithm}", True, ui_config.TEXT_COLOR)
+                self.screen.blit(text, (720, 380))
 
         elif self.mode == "competitive":
             pygame.draw.rect(self.screen, ui_config.WHITE, self.input_box)
