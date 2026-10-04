@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from .sokobanState import SokobanState
+from .sokoban_state import SokobanState
 from .constants import WALL, AGENT, BOX, GOAL, BOX_ON_GOAL, EMPTY
 
 

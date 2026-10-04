@@ -1,19 +1,19 @@
-from source.gameApp import GameApp
-from source.shared.mapParser import parse_map
+from source.game_app import GameApp
+from source.shared.map_parser import parse_map
 
 
 def main():
     app = GameApp()
 
-    mode, mapPath = app.run()
+    mode, map_path = app.run()
 
-    if mapPath is None:
+    if map_path is None:
         return
 
-    state = parse_map(mapPath)
+    state = parse_map(map_path)
 
     print("Mode:", mode)
-    print("Map:", mapPath)
+    print("Map:", map_path)
 
     print("Agent 1:", state.agent1)
     print("Agent 2:", state.agent2)

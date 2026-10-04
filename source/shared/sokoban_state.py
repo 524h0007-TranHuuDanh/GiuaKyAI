@@ -11,34 +11,34 @@ class SokobanState:
         self.height = height
         self.row_lengths = row_lengths
 
-    def getAgent(self, agentId):
-        if agentId == 1:
+    def get_agent(self, agent_id):
+        if agent_id == 1:
             return self.agent1
 
-        if agentId == 2:
+        if agent_id == 2:
             return self.agent2
 
         return None
 
-    def isWall(self, position):
+    def is_wall(self, position):
         if position in self.walls:
             return True
 
         return False
 
-    def isBox(self, position):
+    def is_box(self, position):
         if position in self.boxes:
             return True
 
         return False
 
-    def isGoal(self, position):
+    def is_goal(self, position):
         if position in self.goals:
             return True
 
         return False
 
-    def countBoxesOnGoals(self):
+    def count_boxes_on_goals(self):
         count = 0
 
         for box in self.boxes:
@@ -48,7 +48,7 @@ class SokobanState:
         return count
 
     def copy(self):
-        newState = SokobanState(
+        new_state = SokobanState(
             self.agent1,
             self.agent2,
             frozenset(self.boxes),
@@ -59,4 +59,4 @@ class SokobanState:
             self.row_lengths
         )
 
-        return newState
+        return new_state

@@ -1,42 +1,42 @@
-from .position import getNextPosition
+from .position import get_next_position
 
 
 class Movement:
     def __init__(self, rules):
         self.rules = rules
 
-    def moveAgent(self, state, agentId, action):
-        canMove = self.rules.canMoveAgent(state, agentId, action)
+    def move_agent(self, state, agent_id, action):
+        can_move = self.rules.can_move_agent(state, agent_id, action)
 
-        if canMove == False:
-            newState = state.copy()
-            return newState
+        if can_move == False:
+            new_state = state.copy()
+            return new_state
 
-        newState = state.copy()
+        new_state = state.copy()
 
-        agent = newState.getAgent(agentId)
+        agent = new_state.get_agent(agent_id)
 
         if action.name == "STAY":
-            return newState
+            return new_state
 
-        currentPosition = agent.position
-        nextPosition = getNextPosition(currentPosition, action)
+        current_position = agent.position
+        next_position = get_next_position(current_position, action)
 
-        box = newState.boxPosition(nextPosition)
+        box = new_state.box_position(next_position)
 
         if box is not None:
-            boxPosition = box.position
-            boxNextPosition = getNextPosition(boxPosition, action)
+            box_position = box.position
+            box_next_position = get_next_position(box_position, action)
 
-            box.position = boxNextPosition
+            box.position = box_next_position
 
-            if newState.isGoal(boxNextPosition):
-                box.owner = agentId
+            if new_state.is_goal(box_next_position):
+                box.owner = agent_id
             else:
                 box.owner = None
 
-        agent.position = nextPosition
+        agent.position = next_position
 
-        newState.stepCount = newState.stepCount + 1
+        new_state.step_count = new_state.step_count + 1
 
-        return newState
+        return new_state

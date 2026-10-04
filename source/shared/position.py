@@ -1,13 +1,13 @@
-def getNextPosition(position, action):
+def get_next_position(position, action):
     x = position[0]
     y = position[1]
 
     dx = action.value[0]
     dy = action.value[1]
 
-    newX = x + dx
-    newY = y + dy
+    new_x = x + dx
+    new_y = y + dy
 
-    newPosition = (newX, newY)
+    new_position = (new_x, new_y)
 
-    return newPosition
+    return new_position
