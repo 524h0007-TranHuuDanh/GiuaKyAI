@@ -5,6 +5,9 @@ from .search_base import SearchAlgorithm, SearchResult
 
 
 class UCS(SearchAlgorithm):
+    def __init__(self, max_nodes=None):
+        self.max_nodes = max_nodes
+
     def solve(self, problem):
         start_node = Node(state=problem.initial_state, cost=0)
 
@@ -15,13 +18,15 @@ class UCS(SearchAlgorithm):
         max_frontier = 1
 
         while frontier:
+            if self.max_nodes is not None and nodes_expanded >= self.max_nodes:
+                break
+
             g, _, node = heapq.heappop(frontier)
             key = node.state.key()
 
             if key in explored:
                 continue
             explored.add(key)
-
             nodes_expanded += 1
 
             if problem.goal_test(node.state):
