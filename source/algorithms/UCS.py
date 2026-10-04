@@ -76,20 +76,13 @@ class USC:
     def _state_key(self, state):
         return(state.agent1, state.agent2, tuple(sorted(state.boxes)))
 
+
     def _get_first_action():
         #nếu node goal là start thì đứng yên
         if Node.parent is None:
             return Action.STAY
-
         #đi ngược lại từ goal về start
         while node.parent.parent is not None:
             node = node.parent
 
         return node.action
-    
-
-
-            
-
-
-

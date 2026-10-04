@@ -23,18 +23,5 @@ class MainMenuScreen:
         title_rect = title.get_rect(center=(ui_config.WINDOW_WIDTH // 2, 130))
         self.screen.blit(title, title_rect)
 
-        draw_button(
-            self.screen,
-            self.single_button,
-            self.button_font,
-            "Single",
-            ui_config.SINGLE_BUTTON_COLOR
-        )
-
-        draw_button(
-            self.screen,
-            self.competitive_button,
-            self.button_font,
-            "Competitive",
-            ui_config.COMPETITIVE_BUTTON_COLOR
-        )
+        draw_button(self.screen, self.single_button, self.button_font, "Single", ui_config.SINGLE_BUTTON_COLOR)
+        draw_button(self.screen, self.competitive_button, self.button_font, "Competitive", ui_config.COMPETITIVE_BUTTON_COLOR)
