@@ -5,34 +5,24 @@ from .search_base import SearchAlgorithm, SearchResult
 
 
 class UCS(SearchAlgorithm):
-    def __init__(self, record=False, node_limit=None):
-        self.record = record
-        self.node_limit = node_limit
-
     def solve(self, problem):
-        init = problem.initial_state
-        start_node = Node(state=init, cost=0)
+        start_node = Node(state=problem.initial_state, cost=0)
 
-        frontier = [(0, 0, 0, start_node)]
+        frontier = [(0, 0, start_node)]
         counter = 1
-
-        best_cost = {init.key(): 0}
-        explored_states = [] if self.record else None
+        explored = set()
         nodes_expanded = 0
         max_frontier = 1
 
         while frontier:
-            f, neg_g, _, node = heapq.heappop(frontier)
-            g = -neg_g
+            g, _, node = heapq.heappop(frontier)
             key = node.state.key()
 
-            if key in best_cost and g > best_cost[key]:
+            if key in explored:
                 continue
+            explored.add(key)
 
             nodes_expanded += 1
-
-            if self.record:
-                explored_states.append(key)
 
             if problem.goal_test(node.state):
                 actions = self.reconstruct(node)
@@ -42,23 +32,19 @@ class UCS(SearchAlgorithm):
                     total_cost=node.cost,
                     nodes_expanded=nodes_expanded,
                     max_frontier=max_frontier,
-                    explored_states=explored_states,
                 )
-
-            if self.node_limit is not None and nodes_expanded >= self.node_limit:
-                break
 
             for action in problem.actions(node.state):
                 next_state = problem.result(node.state, action)
                 next_key = next_state.key()
-                next_g = node.cost + problem.step_cost(node.state, action, next_state)
 
-                if next_key in best_cost and next_g >= best_cost[next_key]:
+                if next_key in explored:
                     continue
 
-                best_cost[next_key] = next_g
+                next_g = node.cost + problem.step_cost(node.state, action, next_state)
                 next_node = Node(state=next_state, parent=node, action=action, cost=next_g)
-                heapq.heappush(frontier, (next_g, -next_g, counter, next_node))
+
+                heapq.heappush(frontier, (next_g, counter, next_node))
                 counter += 1
 
             if len(frontier) > max_frontier:
@@ -70,5 +56,4 @@ class UCS(SearchAlgorithm):
             total_cost=0,
             nodes_expanded=nodes_expanded,
             max_frontier=max_frontier,
-            explored_states=explored_states,
         )
