@@ -1,18 +1,15 @@
-from .position import getNextPosition
+from .position import get_next_position
 
 
 class Rules:
     def __init__(self, walls):
-        self.walls = walls
+        self.walls = set(walls)
 
-    def isWall(self, position):
-        if position in self.walls:
-            return True
+    def is_wall(self, position):
+        return position in self.walls
 
-        return False
-
-    def canMoveAgent(self, state, agentId, action):
-        agent = state.getAgent(agentId)
+    def can_move_agent(self, state, agent_id, action):
+        agent = state.get_agent(agent_id)
 
         if agent is None:
             return False
@@ -20,26 +17,26 @@ class Rules:
         if action.name == "STAY":
             return True
 
-        currentPosition = agent.position
-        nextPosition = getNextPosition(currentPosition, action)
+        next_position = get_next_position(agent, action)
 
-        if self.isWall(nextPosition):
+        if not state.is_inside(next_position):
             return False
 
-        box = state.boxPosition(nextPosition)
+        if self.is_wall(next_position):
+            return False
 
-        if box is None:
+        if not state.is_box(next_position):
             return True
 
-        boxPosition = box.position
-        boxNextPosition = getNextPosition(boxPosition, action)
+        box_next_position = get_next_position(next_position, action)
 
-        if self.isWall(boxNextPosition):
+        if not state.is_inside(box_next_position):
             return False
 
-        otherBox = state.boxPosition(boxNextPosition)
+        if self.is_wall(box_next_position):
+            return False
 
-        if otherBox is not None:
+        if state.is_box(box_next_position):
             return False
 
         return True
