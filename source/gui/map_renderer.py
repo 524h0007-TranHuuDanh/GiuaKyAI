@@ -7,56 +7,54 @@ class MapRenderer:
         self.screen = screen
         self.tile_size = tile_size
 
+        self.floor_image = pygame.image.load(ui_config.FLOOR_IMAGE).convert_alpha()
+        self.wall_image = pygame.image.load(ui_config.WALL_IMAGE).convert_alpha()
+        self.box_image = pygame.image.load(ui_config.BOX_IMAGE).convert_alpha()
+        self.goal_image = pygame.image.load(ui_config.GOAL_IMAGE).convert_alpha()
+        self.agent1_image = pygame.image.load(ui_config.AGENT1_IMAGE).convert_alpha()
+        self.agent2_image = pygame.image.load(ui_config.AGENT2_IMAGE).convert_alpha()
+
+        self.floor_image = pygame.transform.scale(self.floor_image, (tile_size, tile_size))
+        self.wall_image = pygame.transform.scale(self.wall_image, (tile_size, tile_size))
+        self.box_image = pygame.transform.scale(self.box_image, (tile_size, tile_size))
+        self.goal_image = pygame.transform.scale(self.goal_image, (tile_size, tile_size))
+        self.agent1_image = pygame.transform.scale(self.agent1_image, (tile_size, tile_size))
+        self.agent2_image = pygame.transform.scale(self.agent2_image, (tile_size, tile_size))
+
     def draw_floor(self, x, y):
         pixel_x = x * self.tile_size
         pixel_y = y * self.tile_size
-
-        rect = pygame.Rect(pixel_x, pixel_y, self.tile_size, self.tile_size)
-
-        pygame.draw.rect(self.screen, ui_config.FLOOR_COLOR, rect)
-        pygame.draw.rect(self.screen, ui_config.GRID_COLOR, rect, 1)
+        self.screen.blit(self.floor_image, (pixel_x, pixel_y))
 
     def draw_wall(self, position):
         x, y = position
-
         pixel_x = x * self.tile_size
         pixel_y = y * self.tile_size
-
-        rect = pygame.Rect(pixel_x, pixel_y, self.tile_size, self.tile_size)
-
-        pygame.draw.rect(self.screen, ui_config.WALL_COLOR, rect)
+        self.screen.blit(self.wall_image, (pixel_x, pixel_y))
 
     def draw_goal(self, position):
         x, y = position
-
-        center_x = x * self.tile_size + self.tile_size // 2
-        center_y = y * self.tile_size + self.tile_size // 2
-
-        pygame.draw.circle(self.screen, ui_config.GOAL_COLOR, (center_x, center_y), 10)
+        pixel_x = x * self.tile_size
+        pixel_y = y * self.tile_size
+        self.screen.blit(self.goal_image, (pixel_x, pixel_y))
 
     def draw_box(self, position):
         x, y = position
-
-        pixel_x = x * self.tile_size + 5
-        pixel_y = y * self.tile_size + 5
-
-        box_size = self.tile_size - 10
-        rect = pygame.Rect(pixel_x, pixel_y, box_size, box_size)
-
-        pygame.draw.rect(self.screen, ui_config.BOX_COLOR, rect)
+        pixel_x = x * self.tile_size
+        pixel_y = y * self.tile_size
+        self.screen.blit(self.box_image, (pixel_x, pixel_y))
 
     def draw_agent(self, position, agent_id):
         x, y = position
-
-        center_x = x * self.tile_size + self.tile_size // 2
-        center_y = y * self.tile_size + self.tile_size // 2
+        pixel_x = x * self.tile_size
+        pixel_y = y * self.tile_size
 
         if agent_id == 1:
-            color = ui_config.AGENT1_COLOR
+            image = self.agent1_image
         else:
-            color = ui_config.AGENT2_COLOR
+            image = self.agent2_image
 
-        pygame.draw.circle(self.screen, color, (center_x, center_y), 18)
+        self.screen.blit(image, (pixel_x, pixel_y))
 
     def draw(self, walls, state, rows, columns):
         for y in range(rows):

@@ -28,6 +28,10 @@ class EventHandler:
                 self.screen_controller.select_map(map_name)
                 return
 
+    def handle_game(self, mouse_position):
+        if self.screen_controller.game_screen.back_button.collidepoint(mouse_position):
+            self.screen_controller.screen_state = "map"
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -42,12 +46,19 @@ class EventHandler:
                 elif self.screen_controller.screen_state == "map":
                     self.handle_map_menu(mouse_position)
 
+                elif self.screen_controller.screen_state == "game":
+                    self.handle_game(mouse_position)
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    if self.screen_controller.screen_state == "map":
+                    if self.screen_controller.screen_state == "game":
+                        self.screen_controller.screen_state = "map"
+
+                    elif self.screen_controller.screen_state == "map":
                         self.screen_controller.mode = None
                         self.screen_controller.selected_map = None
                         self.screen_controller.screen_state = "mode"
+
                     else:
                         return False
 
