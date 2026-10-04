@@ -1,5 +1,6 @@
 import pygame
 from .. import ui_config
+from ..ui_components import draw_pixel_button
 
 
 class MainMenuScreen:
@@ -9,20 +10,22 @@ class MainMenuScreen:
         self.title_font = pygame.font.Font(None, ui_config.TITLE_FONT_SIZE)
         self.button_font = pygame.font.Font(None, ui_config.BUTTON_FONT_SIZE)
 
-        self.single_button = pygame.Rect(250, 220, 300, 70)
-        self.competitive_button = pygame.Rect(250, 330, 300, 70)
+        self.background = pygame.image.load(ui_config.BACKGROUND_IMAGE).convert()
+        self.background = pygame.transform.scale(self.background, (ui_config.WINDOW_WIDTH, ui_config.WINDOW_HEIGHT))
+
+        button_width = 300
+        button_height = 70
+        button_x = (ui_config.WINDOW_WIDTH - button_width) // 2
+
+        self.single_button = pygame.Rect(button_x, 220, button_width, button_height)
+        self.competitive_button = pygame.Rect(button_x, 330, button_width, button_height)
 
     def draw(self):
-        self.screen.fill(ui_config.BACKGROUND_COLOR)
+        self.screen.blit(self.background, (0, 0))
 
         title = self.title_font.render("SOKOBAN", True, ui_config.TITLE_COLOR)
-        self.screen.blit(title, (300, 100))
+        title_rect = title.get_rect(center=(ui_config.WINDOW_WIDTH // 2, 110))
+        self.screen.blit(title, title_rect)
 
-        pygame.draw.rect(self.screen, ui_config.SINGLE_BUTTON_COLOR, self.single_button)
-        pygame.draw.rect(self.screen, ui_config.COMPETITIVE_BUTTON_COLOR, self.competitive_button)
-
-        single_text = self.button_font.render("Single", True, ui_config.TEXT_COLOR)
-        competitive_text = self.button_font.render("Competitive", True, ui_config.TEXT_COLOR)
-
-        self.screen.blit(single_text, (355, 240))
-        self.screen.blit(competitive_text, (320, 350))
+        draw_pixel_button(self.screen, self.single_button, self.button_font, "Single", ui_config.SINGLE_BUTTON_COLOR)
+        draw_pixel_button(self.screen, self.competitive_button, self.button_font, "Competitive", ui_config.COMPETITIVE_BUTTON_COLOR)
