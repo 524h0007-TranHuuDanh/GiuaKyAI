@@ -1,24 +1,25 @@
-from source.gui.gameApp import GameApp
+from source.gameApp import GameApp
+from source.shared.mapParser import parse_map
 
 
 def main():
-    singleData = {
-        "walls": [],
-        "state": None,
-        "rows": 0,
-        "columns": 0
-    }
+    app = GameApp()
 
-    competitiveData = {
-        "walls": [],
-        "state": None,
-        "rows": 0,
-        "columns": 0
-    }
+    mode, mapPath = app.run()
 
-    app = GameApp(singleData, competitiveData)
+    if mapPath is None:
+        return
 
-    app.run()
+    state = parse_map(mapPath)
+
+    print("Mode:", mode)
+    print("Map:", mapPath)
+
+    print("Agent 1:", state.agent1)
+    print("Agent 2:", state.agent2)
+    print("Boxes:", state.boxes)
+    print("Goals:", state.goals)
+    print("Walls:", state.walls)
 
 
 if __name__ == "__main__":

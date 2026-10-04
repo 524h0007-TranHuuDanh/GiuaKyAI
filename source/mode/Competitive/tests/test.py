@@ -1,7 +1,7 @@
 from source.shared.action import Action
 from source.shared.agent import Agent
 from source.shared.box import Box
-from core.gameState import GameState
+from source.mode.Competitive.core.competitiveState import GameState
 from source.shared.rules import Rules
 from source.shared.movement import Movement
 
