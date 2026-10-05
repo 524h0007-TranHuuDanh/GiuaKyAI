@@ -93,15 +93,16 @@ class EventHandler:
                 game = self.screen_controller.game_screen
 
                 if self.screen_controller.screen_state == "game":
-                    if event.key == pygame.K_LEFT:
+                    if event.key == pygame.K_SPACE:
+                        game.toggle_pause()
+
+                    elif event.key == pygame.K_LEFT:
                         game.prev()
 
                     elif event.key == pygame.K_RIGHT:
                         game.next()
 
                     elif event.key == pygame.K_BACKSPACE:
-                        game.pause()
-
                         if game.mode == "competitive" and game.input_active:
                             game.n_text = game.n_text[:-1]
 

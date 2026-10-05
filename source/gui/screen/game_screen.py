@@ -24,8 +24,6 @@ class GameScreen:
         self.input_box = pygame.Rect(720, 140, 180, 42)
 
         self.run_button = pygame.Rect(720, 200, 180, 42)
-        self.prev_button = pygame.Rect(720, 260, 85, 42)
-        self.next_button = pygame.Rect(815, 260, 85, 42)
         self.reset_button = pygame.Rect(720, 320, 180, 42)
         self.pause_button = pygame.Rect(720, 380, 180, 42)
 
@@ -231,7 +229,4 @@ class GameScreen:
 
         draw_button(self.screen, self.back_button, self.button_font, "Back", ui_config.BACK_BUTTON_COLOR)
         draw_button(self.screen, self.run_button, self.button_font, "Run", ui_config.ACTION_BUTTON_COLOR)
-        draw_button(self.screen, self.prev_button, self.button_font, "Prev", ui_config.ACTION_BUTTON_COLOR)
-        draw_button(self.screen, self.next_button, self.button_font, "Next", ui_config.ACTION_BUTTON_COLOR)
         draw_button(self.screen, self.reset_button, self.button_font, "Reset", ui_config.ACTION_BUTTON_COLOR)
-        draw_button(self.screen, self.pause_button, self.button_font, pause_text, ui_config.ACTION_BUTTON_COLOR)

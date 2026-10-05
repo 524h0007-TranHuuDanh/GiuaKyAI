@@ -28,7 +28,7 @@ class UCS(SearchAlgorithm):
                 continue
             explored.add(key)
             nodes_expanded += 1
-
+            
             if problem.goal_test(node.state):
                 actions = self.reconstruct(node)
                 return SearchResult(
