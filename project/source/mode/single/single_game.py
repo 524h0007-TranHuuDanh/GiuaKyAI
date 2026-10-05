@@ -1,5 +1,5 @@
 from ...algorithms.astar import AStar
-from ...algorithms.ucs import UCS
+from ...algorithms.ucs import Ucs
 from .core.problem import SokobanProblem
 
 
@@ -10,7 +10,7 @@ class SingleMain:
         if algorithm_name == "A*":
             algorithm = AStar()
         elif algorithm_name == "UCS":
-            algorithm = UCS()
+            algorithm = Ucs()
         else:
             return []
 

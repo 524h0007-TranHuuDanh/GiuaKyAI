@@ -6,7 +6,7 @@ from .search_base import SearchAlgorithm, SearchResult
 from ..shared.action import Action
 
 
-class UCS(SearchAlgorithm):
+class Ucs(SearchAlgorithm):
     def __init__(self, time_limit=0):
         self.time_limit = time_limit
 
