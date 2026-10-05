@@ -2,14 +2,14 @@ import gc
 import time
 import tracemalloc
 
-from ....algorithms.ucs import UCS
+from ....algorithms.ucs import Ucs
 from ....algorithms.astar import AStar
 
 
 def make_factory(algorithm):
     def factory():
         if algorithm == "UCS":
-            return UCS()
+            return Ucs()
         return AStar()
     return factory
 

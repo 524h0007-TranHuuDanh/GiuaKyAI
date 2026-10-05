@@ -2,7 +2,7 @@ import csv
 from collections import deque
 
 from .common import list_maps, make_problem, RESULT_DIR
-from ....algorithms.ucs import UCS
+from ....algorithms.ucs import Ucs
 from ....algorithms.heuristic import heuristic
 
 
@@ -36,7 +36,7 @@ def verify_one(map_path):
     for s in states:
         #UCS để lấy cost tối ưu h*(s)
         sub = type(problem)(s)
-        res = UCS().solve(sub)
+        res = Ucs().solve(sub)
 
         if not res.solved:
             continue          
