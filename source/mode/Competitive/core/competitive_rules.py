@@ -2,8 +2,6 @@ from ....shared.position import get_next_position
 
 
 class CompetitiveRules:
-    # THÊM: __init__ nhận walls. Code cũ không có __init__ nên gọi
-    # CompetitiveRules(state.walls) sẽ lỗi "takes no arguments"
     def __init__(self, walls):
         self.walls = set(walls)
 
@@ -21,30 +19,22 @@ class CompetitiveRules:
             next2 = get_next_position(state.agent2, action2)
 
         if can_move_1 and can_move_2:
-            # SỬA: code cũ gán can_move_1 = False, can_move_2 = False rồi rơi xuống return
-            # Đổi thành return False, False để thoát ngay
             if next1 == next2:
                 return False, False
 
-            # SỬA: code cũ dùng elif. Vì đã return ở trên nên đổi thành if
             if next1 == state.agent2 and next2 == state.agent1:
                 return False, False
 
-            # THÊM: code cũ thiếu. Box của agent 1 đẩy vào ô agent 2 sẽ đứng
-            # -> box và agent 2 trùng ô, vi phạm "không đi xuyên qua nhau"
             if next1 in state.boxes:
                 box1_next = get_next_position(next1, action1)
                 if box1_next == next2:
                     return False, False
 
-            # THÊM: code cũ thiếu. Box của agent 2 đẩy vào ô agent 1 sẽ đứng
             if next2 in state.boxes:
                 box2_next = get_next_position(next2, action2)
                 if box2_next == next1:
                     return False, False
 
-            # THÊM: code cũ thiếu. Hai box đẩy vào cùng 1 ô
-            # boxes là set nên 2 box cùng ô sẽ mất 1 -> phải hủy cả 2 action
             if next1 in state.boxes and next2 in state.boxes:
                 box1_next = get_next_position(next1, action1)
                 box2_next = get_next_position(next2, action2)
