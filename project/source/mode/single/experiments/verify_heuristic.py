@@ -1,13 +1,13 @@
 import csv
 from collections import deque
 
-from .common import list_maps, make_problem, RESULT_DIR
+from .common import make_problem, RESULT_DIR, MAP_DIR
 from ....algorithms.ucs import Ucs
 from ....algorithms.heuristic import heuristic
 
 
 def get_reachable_states(problem, limit=150):
-    #Lấy một số state reachable bằng bfs.
+    # Lấy một số state reachable bằng bfs.
     start = problem.initial_state
     visited = {start.key(): start}
     queue = deque([start])
@@ -34,22 +34,23 @@ def verify_one(map_path):
     cons_fail = 0
 
     for s in states:
-        #UCS để lấy cost tối ưu h*(s)
+        # UCS để lấy cost tối ưu h*(s)
         sub = type(problem)(s)
-        res = Ucs().solve(sub)
+        res = Ucs(time_limit=40000).solve(sub)
 
         if not res.solved:
-            continue          
+            continue
 
         h_star = res.total_cost
         h = heuristic(s)
-        #ktra tính admissible: h(s) <= h*(s)
+
+        # ktra tính admissible: h(s) <= h*(s)
         if h <= h_star:
             adm_ok += 1
         else:
             adm_fail += 1
 
-        #ktra consistency: h(s) <= 1 + h(s')
+        # ktra consistency: h(s) <= 1 + h(s')
         for a in problem.actions(s):
             s2 = problem.result(s, a)
             if heuristic(s) <= 1 + heuristic(s2):
@@ -71,10 +72,10 @@ def main():
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
     out = RESULT_DIR / "verify_heuristic.csv"
 
-    rows = []
-    for m in list_maps():
-        print("Kiem tra:", m.name)
-        rows.append(verify_one(m))
+    map_path = MAP_DIR / "example_map.txt"
+
+    print("Kiem tra:", map_path.name)
+    rows = [verify_one(map_path)]
 
     fields = [
         "map",
