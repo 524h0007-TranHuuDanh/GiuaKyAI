@@ -34,8 +34,7 @@ def verify_one(map_path):
     cons_fail = 0
 
     for s in states:
-        # Kiểm tra Admissibility
-        # Chạy UCS từ state s để lấy cost tối ưu h*(s)
+        # Admissibility ucs từ state s để lấy cost tối ưu h*(s)
         sub = type(problem)(s)
         res = UCS().solve(sub)
 
@@ -50,8 +49,7 @@ def verify_one(map_path):
         else:
             adm_fail += 1
 
-        # Kiểm tra Consistency
-        # Với mọi action hợp lệ: h(s) <= 1 + h(s')
+        # kt ConsistencyVới mọi action hợp lệ: h(s) <= 1 + h(s')
         for a in problem.actions(s):
             s2 = problem.result(s, a)
             if heuristic(s) <= 1 + heuristic(s2):

@@ -1,6 +1,7 @@
 def heuristic(state):
     count = 0
     for box in state.boxes:
+        #goal k cần tính
         if box in state.goals:
             continue
 
@@ -9,7 +10,7 @@ def heuristic(state):
         down = (x, y + 1) in state.walls
         left = (x - 1, y) in state.walls
         right = (x + 1, y) in state.walls
-
+        #bõ nằm ở góc chết
         if (up or down) and (left or right):
             return float("inf")
 
