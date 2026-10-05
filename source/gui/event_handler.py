@@ -59,14 +59,6 @@ class EventHandler:
 
             return
 
-        if game.prev_button.collidepoint(mouse_position):
-            game.prev()
-            return
-
-        if game.next_button.collidepoint(mouse_position):
-            game.next()
-            return
-
         if game.reset_button.collidepoint(mouse_position):
             game.reset()
             return

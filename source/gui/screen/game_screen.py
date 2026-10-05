@@ -230,3 +230,4 @@ class GameScreen:
         draw_button(self.screen, self.back_button, self.button_font, "Back", ui_config.BACK_BUTTON_COLOR)
         draw_button(self.screen, self.run_button, self.button_font, "Run", ui_config.ACTION_BUTTON_COLOR)
         draw_button(self.screen, self.reset_button, self.button_font, "Reset", ui_config.ACTION_BUTTON_COLOR)
+        #draw_button(self.screen, self.pause_button, self.button_font, pause_text, ui_config.ACTION_BUTTON_COLOR)
