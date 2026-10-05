@@ -1,0 +1,2 @@
+map,states_checked,admissible_ok,admissible_fail,consistent_ok,consistent_fail
+example_map.txt,26,26,0,62,0
