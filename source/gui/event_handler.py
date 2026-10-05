@@ -34,6 +34,7 @@ class EventHandler:
         game = self.screen_controller.game_screen
 
         if game.back_button.collidepoint(mouse_position):
+            game.pause()
             self.screen_controller.screen_state = "map"
             return
 
@@ -68,6 +69,10 @@ class EventHandler:
 
         if game.reset_button.collidepoint(mouse_position):
             game.reset()
+            return
+
+        if game.pause_button.collidepoint(mouse_position):
+            game.toggle_pause()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -87,15 +92,25 @@ class EventHandler:
             if event.type == pygame.KEYDOWN:
                 game = self.screen_controller.game_screen
 
-                if self.screen_controller.screen_state == "game" and game.input_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        game.n_text = game.n_text[:-1]
+                if self.screen_controller.screen_state == "game":
+                    if event.key == pygame.K_LEFT:
+                        game.prev()
 
-                    elif event.unicode.isdigit():
+                    elif event.key == pygame.K_RIGHT:
+                        game.next()
+
+                    elif event.key == pygame.K_BACKSPACE:
+                        game.pause()
+
+                        if game.mode == "competitive" and game.input_active:
+                            game.n_text = game.n_text[:-1]
+
+                    elif game.mode == "competitive" and game.input_active and event.unicode.isdigit():
                         game.n_text += event.unicode
 
                 if event.key == pygame.K_ESCAPE:
                     if self.screen_controller.screen_state == "game":
+                        game.pause()
                         self.screen_controller.screen_state = "map"
 
                     elif self.screen_controller.screen_state == "map":
