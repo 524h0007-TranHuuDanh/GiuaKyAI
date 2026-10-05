@@ -25,7 +25,7 @@ class AStar(SearchAlgorithm):
         start_time = time.time()   
 
         while frontier:
-            # check thời gian 
+            #check thời gian 
             if self.time_limit > 0:
                 elapsed_ms = (time.time() - start_time) * 1000
                 if elapsed_ms > self.time_limit:
@@ -40,7 +40,7 @@ class AStar(SearchAlgorithm):
             if self.max_nodes is not None and nodes_expanded >= self.max_nodes:
                 break
 
-            # lấy node có f nhỏ nhất
+            #lấy node có f nhỏ nhất
             f, _, node = heapq.heappop(frontier)
             key = node.state.key()
 
@@ -50,7 +50,7 @@ class AStar(SearchAlgorithm):
             explored.add(key)
             nodes_expanded += 1
 
-            # tìm thấy goal 
+            #tìm thấy goal 
             if problem.goal_test(node.state):
                 actions = self.reconstruct(node)
                 return SearchResult(
@@ -69,14 +69,14 @@ class AStar(SearchAlgorithm):
                     continue
 
                 next_h = heuristic(next_state)
-                # h vô cực thì bỏ qua
+                #h vô cực thì bỏ qua
                 if next_h == float("inf"):
                     continue
 
                 next_g = node.cost + problem.step_cost(node.state, action, next_state)
                 next_node = Node(state=next_state, parent=node, action=action, cost=next_g)
 
-                # f(n') = g(n') + h(n')
+                #f(n') = g(n') + h(n')
                 heapq.heappush(frontier, (next_g + next_h, counter, next_node))
                 counter += 1
 

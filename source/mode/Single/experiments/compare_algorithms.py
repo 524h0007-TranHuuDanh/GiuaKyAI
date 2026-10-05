@@ -13,7 +13,7 @@ def main():
     for map_path in list_maps():
         print(f"Dang chay: {map_path.name}")
         problem = make_problem(map_path)
-
+        #so sánh UCS và A*
         for algo in ["UCS", "A*"]:
             factory = make_factory(algo)
             result = run_once(factory, problem)

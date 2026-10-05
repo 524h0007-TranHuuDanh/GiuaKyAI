@@ -7,7 +7,7 @@ from ....algorithms.heuristic import heuristic
 
 
 def get_reachable_states(problem, limit=150):
-    """Lấy một số state reachable bằng BFS (đơn giản)."""
+    #Lấy một số state reachable bằng bfs.
     start = problem.initial_state
     visited = {start.key(): start}
     queue = deque([start])
@@ -34,7 +34,7 @@ def verify_one(map_path):
     cons_fail = 0
 
     for s in states:
-        # Admissibility ucs từ state s để lấy cost tối ưu h*(s)
+        #UCS để lấy cost tối ưu h*(s)
         sub = type(problem)(s)
         res = UCS().solve(sub)
 
@@ -43,13 +43,13 @@ def verify_one(map_path):
 
         h_star = res.total_cost
         h = heuristic(s)
-
+        #ktra tính admissible: h(s) <= h*(s)
         if h <= h_star:
             adm_ok += 1
         else:
             adm_fail += 1
 
-        # kt ConsistencyVới mọi action hợp lệ: h(s) <= 1 + h(s')
+        #ktra consistency: h(s) <= 1 + h(s')
         for a in problem.actions(s):
             s2 = problem.result(s, a)
             if heuristic(s) <= 1 + heuristic(s2):
