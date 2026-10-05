@@ -1,6 +1,6 @@
 from ....shared.action import Action
 from .competitive_rules import CompetitiveRules
-from .competitive_movement import CompetitiveMovement
+from .competitive_move import CompetitiveMovement
 
 
 class CompetitiveProblem:

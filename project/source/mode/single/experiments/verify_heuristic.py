@@ -2,7 +2,7 @@ import csv
 from collections import deque
 
 from .common import list_maps, make_problem, RESULT_DIR
-from ....algorithms.UCS import UCS
+from ....algorithms.ucs import UCS
 from ....algorithms.heuristic import heuristic
 
 

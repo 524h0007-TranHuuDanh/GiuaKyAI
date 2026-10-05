@@ -8,9 +8,8 @@ from ..shared.action import Action
 
 
 class AStar(SearchAlgorithm):
-    def __init__(self, max_nodes=None, time_limit=0):
-        self.max_nodes = max_nodes
-        self.time_limit = time_limit   
+    def __init__(self, time_limit=0):
+        self.time_limit = time_limit
 
     def solve(self, problem):
         start_node = Node(state=problem.initial_state, cost=0)
@@ -36,9 +35,6 @@ class AStar(SearchAlgorithm):
                         nodes_expanded=nodes_expanded,
                         max_frontier=max_frontier,
                     )
-
-            if self.max_nodes is not None and nodes_expanded >= self.max_nodes:
-                break
 
             #lấy node có f nhỏ nhất
             f, _, node = heapq.heappop(frontier)

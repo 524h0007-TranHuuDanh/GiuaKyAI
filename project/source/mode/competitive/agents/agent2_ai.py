@@ -1,4 +1,4 @@
-from ....algorithms.UCS import UCS
+from ....algorithms.ucs import UCS
 from ....shared.action import Action
 from ..core.competitive_problem import CompetitiveProblem
 

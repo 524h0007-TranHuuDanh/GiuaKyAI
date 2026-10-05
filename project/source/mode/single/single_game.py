@@ -1,5 +1,5 @@
 from ...algorithms.astar import AStar
-from ...algorithms.UCS import UCS
+from ...algorithms.ucs import UCS
 from .core.problem import SokobanProblem
 
 

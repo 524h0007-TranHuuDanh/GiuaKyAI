@@ -1,15 +1,12 @@
 from .core.competitive_state import CompetitiveState
 from .core.competitive_rules import CompetitiveRules
-from .core.competitive_movement import CompetitiveMovement
+from .core.competitive_move import CompetitiveMovement
 from .agents.agent1_ai import Agent1AI
 from .agents.agent2_ai import Agent2AI
 
 
 class CompetitiveMain:
     def __init__(self):
-        self.rules = CompetitiveRules([])
-        self.movement = CompetitiveMovement(self.rules)
-
         self.agent1_ai = Agent1AI()
         self.agent2_ai = Agent2AI()
 

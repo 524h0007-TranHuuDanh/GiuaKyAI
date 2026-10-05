@@ -2,7 +2,7 @@ import gc
 import time
 import tracemalloc
 
-from ....algorithms.UCS import UCS
+from ....algorithms.ucs import UCS
 from ....algorithms.astar import AStar
 
 

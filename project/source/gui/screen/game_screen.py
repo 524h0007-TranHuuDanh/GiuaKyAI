@@ -1,9 +1,9 @@
 import pygame
 from ..map_renderer import MapRenderer
 from .. import ui_config
-from ...mode.single.main_single import SingleMain
+from ...mode.single.single_game import SingleMain
 from ...mode.single.core.problem import SokobanProblem
-from ...mode.competitive.main_competitive import CompetitiveMain
+from ...mode.competitive.competitive_game import CompetitiveMain
 from ...mode.competitive.core.competitive_state import CompetitiveState
 
 
