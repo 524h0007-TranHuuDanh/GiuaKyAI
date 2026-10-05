@@ -1,0 +1,8 @@
+venv/
+*.pyc
+*.pyo
+.DS_Store
+.vscode/
+.idea/
+experiments/results/*.png
+experiments/results/*.csv
