@@ -63,8 +63,6 @@ class EventHandler:
             game.reset()
             return
 
-        if game.pause_button.collidepoint(mouse_position):
-            game.toggle_pause()
 
     def handle_events(self):
         for event in pygame.event.get():
