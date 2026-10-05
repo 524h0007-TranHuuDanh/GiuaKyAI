@@ -87,11 +87,21 @@ class EventHandler:
             if event.type == pygame.KEYDOWN:
                 game = self.screen_controller.game_screen
 
-                if self.screen_controller.screen_state == "game" and game.input_active:
-                    if event.key == pygame.K_BACKSPACE:
-                        game.n_text = game.n_text[:-1]
+                if self.screen_controller.screen_state == "game":
+                    if event.key == pygame.K_SPACE:
+                        game.toggle_pause()
 
-                    elif event.unicode.isdigit():
+                    elif event.key == pygame.K_LEFT:
+                        game.prev()
+
+                    elif event.key == pygame.K_RIGHT:
+                        game.next()
+
+                    elif event.key == pygame.K_BACKSPACE:
+                        if game.mode == "competitive" and game.input_active:
+                            game.n_text = game.n_text[:-1]
+
+                    elif game.mode == "competitive" and game.input_active and event.unicode.isdigit():
                         game.n_text += event.unicode
 
                 if event.key == pygame.K_ESCAPE:
