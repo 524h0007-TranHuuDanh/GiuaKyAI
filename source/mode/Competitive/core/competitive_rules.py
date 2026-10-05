@@ -2,6 +2,9 @@ from ....shared.position import get_next_position
 
 
 class CompetitiveRules:
+    def __init__(self, walls):
+        self.walls = set(walls)
+
     def resolve_actions(self, state, action1, action2):
         can_move_1 = self.can_move(state, 1, action1)
         can_move_2 = self.can_move(state, 2, action2)
@@ -17,12 +20,26 @@ class CompetitiveRules:
 
         if can_move_1 and can_move_2:
             if next1 == next2:
-                can_move_1 = False
-                can_move_2 = False
+                return False, False
 
-            elif next1 == state.agent2 and next2 == state.agent1:
-                can_move_1 = False
-                can_move_2 = False
+            if next1 == state.agent2 and next2 == state.agent1:
+                return False, False
+
+            if next1 in state.boxes:
+                box1_next = get_next_position(next1, action1)
+                if box1_next == next2:
+                    return False, False
+
+            if next2 in state.boxes:
+                box2_next = get_next_position(next2, action2)
+                if box2_next == next1:
+                    return False, False
+
+            if next1 in state.boxes and next2 in state.boxes:
+                box1_next = get_next_position(next1, action1)
+                box2_next = get_next_position(next2, action2)
+                if box1_next == box2_next:
+                    return False, False
 
         return can_move_1, can_move_2
 

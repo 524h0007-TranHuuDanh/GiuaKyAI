@@ -1,31 +1,32 @@
 from .core.competitive_state import CompetitiveState
 from .core.competitive_rules import CompetitiveRules
 from .core.competitive_movement import CompetitiveMovement
-from ...shared.action import Action
+from .agents.agent1_ai import Agent1AI
+from .agents.agent2_ai import Agent2AI
 
 
 class CompetitiveMain:
     def __init__(self):
-        self.rules = CompetitiveRules()
+        self.rules = CompetitiveRules([])
         self.movement = CompetitiveMovement(self.rules)
+
+        self.agent1_ai = Agent1AI()
+        self.agent2_ai = Agent2AI()
 
     def run(self, state, max_steps):
         state = CompetitiveState(state.agent1, state.agent2, state.boxes, state.goals, state.walls, state.width, state.height)
 
+        self.rules = CompetitiveRules(state.walls)
+        self.movement = CompetitiveMovement(self.rules)
+
         actions = []
 
         for step in range(max_steps):
-            action1 = self.get_action_agent1(state)
-            action2 = self.get_action_agent2(state)
+            action1 = self.agent1_ai.choose_action(state.copy())
+            action2 = self.agent2_ai.choose_action(state.copy())
 
             actions.append((action1, action2))
 
             state = self.movement.move_two_agents(state, action1, action2)
 
         return actions
-
-    def get_action_agent1(self, state):
-        return Action.STAY
-
-    def get_action_agent2(self, state):
-        return Action.STAY

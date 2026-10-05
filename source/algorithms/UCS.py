@@ -1,86 +1,64 @@
-import heapq #dùng để taoh hàng đợi ưu tiên vì USC luôn lấy node có cost nhỏ 1
-from ..shared.action import Action
+import heapq
+
 from .node import Node
+from .search_base import SearchAlgorithm, SearchResult
 
-class UCS:
-    def __init__(self, movement):
-        self.movement = movement
-    def chooseAction(self, state, agentId):
-        if state.is_solved():#game giải xong thì ngừng
-            return Action.STAY
 
-        #node dau tien
-        startNode = Node(state.copy(), cost = 0)
+class UCS(SearchAlgorithm):
+    def __init__(self, max_nodes=None):
+        self.max_nodes = max_nodes
 
-        frontier = [] #node chowf ddc khams phas
-        counter = 0
+    def solve(self, problem):
+        start_node = Node(state=problem.initial_state, cost=0)
 
-        #đưa node đầu tiên vào hàng đợi, counter là dùng để cho trường hợp có những node = cost nhau
-        heapq.heappush(frontier, (startNode.cost, counter, startNode))
-        #lưu trạng thái có chi phí nhỏ nhất đã biết
-        bestCost = {self._state_key(startNode.state): 0}
+        frontier = [(0, 0, start_node)]
+        counter = 1
+        explored = set()
+        nodes_expanded = 0
+        max_frontier = 1
 
-        actions = [
-            Action.NORTH,
-            Action.SOUTH,
-            Action.EAST,
-            Action.WEST,
-            Action.STAY
-        ]
-        #lặp đến khi hết node chờ khám phá
         while frontier:
-            #lấy node có cost nhỏ nhất
-            currentCost, _, currentNode = heapq.heappop(frontier)
-            currentKey = self._state_key(currentNode.state)
-            #bỏ qua node ko còn tối ưu(ví dụ Ban đầu state A có cost = 10 sau tìm đc cost nhỏ hơn thì nó ss cost của node A vẫn đc chứa trong frontier 10 != 5 => bỏ qua)
-            if currentCost != bestCost.get(currentKey):
+            if self.max_nodes is not None and nodes_expanded >= self.max_nodes:
+                break
+
+            g, _, node = heapq.heappop(frontier)
+            key = node.state.key()
+
+            if key in explored:
                 continue
-
-            #kt đã giải đc chưa
-            if currentNode.state.is_solved():
-                return self._get_first_action(currentNode)# trả về 1 action
+            explored.add(key)
+            nodes_expanded += 1
             
-            for action in actions:
-                #TH A1 đang dùng thuật toán
-                if agentId == 1:
-                    nextState = self.movement.move_two_agents(currentNode.state, action, Action.STAY)
-                else: nextState = self.movement.move_two_agents(currentNode.state, Action.STAY, action)
-
-                #tính cost
-                nextCost = currentNode.cost + 1#mỗi bước đi là 1 chi phí => chọn trạng thái có tổng số bươc nhỏ nhất
-                #tạo key cho trạng thái mới
-                nextKey = self._state_key(nextState)
-
-                #kt có đường đi tốt hơn(vd quá khứ có cost là 5, hiện tại tìm đc cost = 2 thì cập nhật ngược lại thì bỏ qua)
-                if nextCost >= bestCost.get(nextKey, float("inf")):
-                    continue
-
-                #luu lại cost tốt nhất
-                bestCost[nextKey] = nextCost
-                #tạo node con
-                childNode = Node(
-                        nextState,
-                        parent=currentNode,
-                        action=action,
-                        cost=nextCost
+            if problem.goal_test(node.state):
+                actions = self.reconstruct(node)
+                return SearchResult(
+                    solved=True,
+                    actions=actions,
+                    total_cost=node.cost,
+                    nodes_expanded=nodes_expanded,
+                    max_frontier=max_frontier,
                 )
 
+            for action in problem.actions(node.state):
+                next_state = problem.result(node.state, action)
+                next_key = next_state.key()
+
+                if next_key in explored:
+                    continue
+
+                next_g = node.cost + problem.step_cost(node.state, action, next_state)
+                next_node = Node(state=next_state, parent=node, action=action, cost=next_g)
+
+                heapq.heappush(frontier, (next_g, counter, next_node))
                 counter += 1
-                heapq.heappush(frontier, (nextCost, counter, childNode))
-        #nếu lặp hết mà vẫn chưa tìm đc đường đến đích thì đứng yên
-        return Action.STAY
 
-    #hàm chuyển state thành key để so sánh
-    def _state_key(self, state):
-        return(state.agent1, state.agent2, tuple(sorted(state.boxes)))
+            if len(frontier) > max_frontier:
+                max_frontier = len(frontier)
 
-
-    def _get_first_action(self, node):
-        #nếu node goal là start thì đứng yên
-        if node.parent is None:
-            return Action.STAY
-        #đi ngược lại từ goal về start
-        while node.parent.parent is not None:
-            node = node.parent
-
-        return node.action
+        return SearchResult(
+            solved=False,
+            actions=[],
+            total_cost=0,
+            nodes_expanded=nodes_expanded,
+            max_frontier=max_frontier,
+        )

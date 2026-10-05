@@ -34,6 +34,7 @@ class EventHandler:
         game = self.screen_controller.game_screen
 
         if game.back_button.collidepoint(mouse_position):
+            game.pause()
             self.screen_controller.screen_state = "map"
             return
 
@@ -68,6 +69,10 @@ class EventHandler:
 
         if game.reset_button.collidepoint(mouse_position):
             game.reset()
+            return
+
+        if game.pause_button.collidepoint(mouse_position):
+            game.toggle_pause()
 
     def handle_events(self):
         for event in pygame.event.get():
@@ -106,6 +111,7 @@ class EventHandler:
 
                 if event.key == pygame.K_ESCAPE:
                     if self.screen_controller.screen_state == "game":
+                        game.pause()
                         self.screen_controller.screen_state = "map"
 
                     elif self.screen_controller.screen_state == "map":

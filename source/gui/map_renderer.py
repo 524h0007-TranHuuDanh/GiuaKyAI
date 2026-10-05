@@ -8,12 +8,7 @@ class MapRenderer:
         self.tile_size = tile_size
 
     def cell_rect(self, x, y, offset_x, offset_y):
-        return pygame.Rect(
-            offset_x + x * self.tile_size,
-            offset_y + y * self.tile_size,
-            self.tile_size,
-            self.tile_size
-        )
+        return pygame.Rect(offset_x + x * self.tile_size, offset_y + y * self.tile_size, self.tile_size, self.tile_size)
 
     def draw(self, state, offset_x, offset_y):
         for y in range(state.height):
@@ -31,14 +26,22 @@ class MapRenderer:
         for goal in state.goals:
             x, y = goal
             rect = self.cell_rect(x, y, offset_x, offset_y)
-            center = rect.center
-            pygame.draw.circle(self.screen, ui_config.GOAL_COLOR, center, self.tile_size // 7)
+            pygame.draw.circle(self.screen, ui_config.GOAL_COLOR, rect.center, self.tile_size // 7)
 
         for box in state.boxes:
             x, y = box
             rect = self.cell_rect(x, y, offset_x, offset_y).inflate(-10, -10)
 
-            if box in state.goals:
+            owner = None
+
+            if hasattr(state, "get_box_owner"):
+                owner = state.get_box_owner(box)
+
+            if owner == 1:
+                color = ui_config.BOX_AGENT1_COLOR
+            elif owner == 2:
+                color = ui_config.BOX_AGENT2_COLOR
+            elif box in state.goals:
                 color = ui_config.BOX_GOAL_COLOR
             else:
                 color = ui_config.BOX_COLOR
