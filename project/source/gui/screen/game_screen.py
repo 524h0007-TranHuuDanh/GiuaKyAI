@@ -159,23 +159,38 @@ class GameScreen:
         if self.state is None:
             return
 
-        map_width = self.state.width * ui_config.TILE_SIZE
-        map_height = self.state.height * ui_config.TILE_SIZE
+        max_map_width = 650
+        max_map_height = ui_config.WINDOW_HEIGHT - 40
+
+        tile_width = max_map_width // self.state.width
+        tile_height = max_map_height // self.state.height
+
+        tile_size = min(ui_config.TILE_SIZE, tile_width, tile_height)
+
+        self.renderer.tile_size = tile_size
+
+        map_width = self.state.width * tile_size
+        map_height = self.state.height * tile_size
+
         offset_x = (680 - map_width) // 2
         offset_y = (ui_config.WINDOW_HEIGHT - map_height) // 2
+
         self.renderer.draw(self.state, offset_x, offset_y)
 
         if self.mode == "single":
             ui_config.draw_button(self.screen, self.ucs_button, self.font, "UCS", ui_config.ACTION_BUTTON_COLOR)
             ui_config.draw_button(self.screen, self.astar_button, self.font, "A*", ui_config.ACTION_BUTTON_COLOR)
+
             if self.algorithm:
                 text = self.font.render(f"Selected: {self.algorithm}", True, ui_config.TEXT_COLOR)
                 self.screen.blit(text, (720, 360))
         else:
             pygame.draw.rect(self.screen, ui_config.WHITE, self.input_box)
             pygame.draw.rect(self.screen, ui_config.TEXT_COLOR, self.input_box, 2)
+
             text = self.font.render(self.n_text, True, ui_config.TEXT_COLOR)
             self.screen.blit(text, (self.input_box.x + 10, self.input_box.y + 8))
+
             text = self.font.render(self.result, True, ui_config.TEXT_COLOR)
             self.screen.blit(text, (720, 500))
 
@@ -191,6 +206,7 @@ class GameScreen:
         step_text = self.font.render(f"Step: {self.step}/{len(self.actions)}", True, ui_config.TEXT_COLOR)
         cost_text = self.font.render(f"Cost: {self.step}", True, ui_config.TEXT_COLOR)
         status_text = self.font.render(f"Status: {status}", True, ui_config.TEXT_COLOR)
+
         self.screen.blit(step_text, (720, 400))
         self.screen.blit(cost_text, (720, 435))
         self.screen.blit(status_text, (720, 470))

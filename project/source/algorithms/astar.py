@@ -8,13 +8,18 @@ from ..shared.action import Action
 
 
 class AStar(SearchAlgorithm):
-    def __init__(self, time_limit=0):
+    def __init__(self, time_limit=0, heuristic_fn=None):
         self.time_limit = time_limit
+
+        if heuristic_fn is None:
+            self.heuristic_fn = heuristic
+        else:
+            self.heuristic_fn = heuristic_fn
 
     def solve(self, problem):
         start_node = Node(state=problem.initial_state, cost=0)
 
-        frontier = [(heuristic(problem.initial_state), 0, start_node)] # lưu f = g + h, counter, node
+        frontier = [(self.heuristic_fn(problem.initial_state), 0, start_node)] # lưu f = g + h, counter, node
 
         counter = 1
         explored = set()
@@ -64,7 +69,7 @@ class AStar(SearchAlgorithm):
                 if next_key in explored:
                     continue
 
-                next_h = heuristic(next_state)
+                next_h = self.heuristic_fn(next_state)
                 #h vô cực thì bỏ qua
                 if next_h == float("inf"):
                     continue

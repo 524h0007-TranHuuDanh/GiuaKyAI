@@ -1,6 +1,7 @@
 from ....algorithms.ucs import Ucs
 from ....shared.action import Action
 from ..core.competitive_problem import CompetitiveProblem
+from .fallback import fallback_move
 
 
 class Agent2AI:
@@ -8,7 +9,7 @@ class Agent2AI:
         problem = CompetitiveProblem(state, 2)
         result = Ucs(time_limit=1000).solve(problem)
 
-        if result.actions:
+        if result.solved and result.actions:
             return result.actions[0]
 
-        return Action.STAY
+        return fallback_move(state, problem)
