@@ -28,7 +28,7 @@ class Ucs(SearchAlgorithm):
                 if elapsed_ms > self.time_limit:
                     return SearchResult(
                         solved=False,
-                        actions=[Action.STAY],
+                        actions=[],
                         total_cost=0,
                         nodes_expanded=nodes_expanded,
                         max_frontier=max_frontier,
