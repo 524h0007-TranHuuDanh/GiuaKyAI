@@ -1,5 +1,4 @@
 from ....algorithms.ucs import Ucs
-from ....shared.action import Action
 from ..core.competitive_problem import CompetitiveProblem
 from .fallback import fallback_move
 

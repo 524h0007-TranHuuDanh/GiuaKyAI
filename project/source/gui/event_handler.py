@@ -55,9 +55,12 @@ class EventHandler:
                 game.run_single(game.algorithm)
 
             elif game.mode == "competitive" and game.n_text:
-                game.run_competitive(int(game.n_text))
+                max_steps = int(game.n_text)
 
-            return
+                if max_steps > 0:
+                    game.run_competitive(max_steps)
+                else:
+                    game.result = "n must be greater than 0"
 
         if game.reset_button.collidepoint(mouse_position):
             game.reset()
