@@ -8,38 +8,82 @@ The project uses:
 - pygame 2.5.2
 - matplotlib 3.11.2
 
-The library versions are fixed in `requirements.txt` to ensure that the project can be installed and executed on the required macOS environment.
+The library versions are fixed in `requirements.txt` to ensure compatibility with the required environment.
 
-## 2. Install Libraries
+---
+
+## 2. Install Python 3.11
+
+### Windows
+
+Check installed Python versions:
+
+```powershell
+py -0p
+```
+
+If Python 3.11 is not installed, install it with:
+
+```powershell
+winget install Python.Python.3.11
+```
+
+After installation, close and reopen the terminal.
+
+Check Python 3.11:
+
+```powershell
+py -3.11 --version
+```
+
+Expected output:
+
+```text
+Python 3.11.x
+```
+
+### macOS 13.7.8 Ventura - Intel Core i5
+
+Check Python 3.11:
+
+```bash
+python3.11 --version
+```
+
+If Python 3.11 is not installed and Homebrew is available:
+
+```bash
+brew install python@3.11
+```
+
+Check again:
+
+```bash
+python3.11 --version
+```
+
+Expected output:
+
+```text
+Python 3.11.x
+```
+
+---
+
+## 3. Install Libraries
 
 Open a terminal in the `project` directory.
 
 ### Windows
 
-Check Python:
-
 ```powershell
-python --version
+py -3.11 -m pip install -r requirements.txt
 ```
 
-Install the required libraries:
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-### macOS 13.7.8 Ventura - Intel Core i5
-
-Check Python:
+### macOS
 
 ```bash
-python3 --version
-```
-
-Install the required libraries:
-
-```bash
-python3 -m pip install -r requirements.txt
+python3.11 -m pip install -r requirements.txt
 ```
 
 Contents of `requirements.txt`:
@@ -49,34 +93,38 @@ pygame==2.5.2
 matplotlib==3.11.2
 ```
 
-## 3. Run the Project
+---
+
+## 4. Run the Project
 
 Run all commands from the root `project` directory.
 
 ### Windows
 
 ```powershell
-python main.py
+py -3.11 main.py
 ```
 
 ### macOS
 
 ```bash
-python3 main.py
+python3.11 main.py
 ```
 
-## 4. Compare UCS and A*
+---
+
+## 5. Compare UCS and A*
 
 ### Windows
 
 ```powershell
-python -m source.mode.single.experiments.compare_algorithms
+py -3.11 -m source.mode.single.experiments.compare_algorithms
 ```
 
 ### macOS
 
 ```bash
-python3 -m source.mode.single.experiments.compare_algorithms
+python3.11 -m source.mode.single.experiments.compare_algorithms
 ```
 
 The results are saved to:
@@ -85,20 +133,22 @@ The results are saved to:
 source/mode/single/experiments/results/compare_algorithms.csv
 ```
 
-## 5. Plot the Results
+---
+
+## 6. Plot the Results
 
 After running the comparison:
 
 ### Windows
 
 ```powershell
-python -m source.mode.single.experiments.plot_results
+py -3.11 -m source.mode.single.experiments.plot_results
 ```
 
 ### macOS
 
 ```bash
-python3 -m source.mode.single.experiments.plot_results
+python3.11 -m source.mode.single.experiments.plot_results
 ```
 
 The generated chart is saved in:
@@ -107,23 +157,27 @@ The generated chart is saved in:
 source/mode/single/experiments/results/
 ```
 
-## 6. Verify the Heuristic
+---
+
+## 7. Verify the Heuristic
 
 ### Windows
 
 ```powershell
-python -m source.mode.single.experiments.verify_heuristic
+py -3.11 -m source.mode.single.experiments.verify_heuristic
 ```
 
 ### macOS
 
 ```bash
-python3 -m source.mode.single.experiments.verify_heuristic
+python3.11 -m source.mode.single.experiments.verify_heuristic
 ```
+
+---
 
 ## Note
 
-Run the commands from the `project` directory:
+Run all commands from the `project` directory:
 
 ```text
 project/
@@ -132,7 +186,7 @@ project/
 └── source/
 ```
 
-Do not run `python -m source...` commands while inside the `source` directory.
+Do not run the experiment commands while inside the `source` directory.
 
 If this error appears:
 
@@ -141,3 +195,17 @@ ModuleNotFoundError: No module named 'source'
 ```
 
 go back to the `project` directory and run the command again.
+
+For Windows, always use:
+
+```text
+py -3.11
+```
+
+For macOS, always use:
+
+```text
+python3.11
+```
+
+This ensures that the project runs with Python 3.11 instead of another installed Python version.
